@@ -6,6 +6,39 @@ include "../config/function.php";
 if (isset($_POST['import'])) {
     require '../vendor/autoload.php';
 
+    // Declare convertDate function outside the loop
+    function convertDate($value) {
+        // Remove any leading/trailing whitespace and apostrophes
+        $value = trim($value);
+        if (substr($value, 0, 1) === "'") {
+            $value = substr($value, 1);
+        }
+        
+        // Handle DD/MM/YYYY format (format utama)
+        if (preg_match("/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/", $value, $matches)) {
+            $day = (int)$matches[1];
+            $month = (int)$matches[2];
+            $year = (int)$matches[3];
+            
+            if (checkdate($month, $day, $year)) {
+                return sprintf('%04d-%02d-%02d', $year, $month, $day);
+            } else {
+                throw new Exception("Tanggal tidak valid: $day/$month/$year");
+            }
+        }
+        
+        // Handle Excel numeric date format
+        if (is_numeric($value)) {
+            try {
+                return \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($value)->format('Y-m-d');
+            } catch (Exception $e) {
+                throw new Exception("Format tanggal Excel tidak valid: $value");
+            }
+        }
+        
+        throw new Exception("Format tanggal harus DD/MM/YYYY (contoh: 08/01/2025). Input yang diterima: $value");
+    }
+
     $file_tmp = $_FILES['file_excel']['tmp_name'];
     $file_name = $_FILES['file_excel']['name'];
     $file_ext = pathinfo($file_name, PATHINFO_EXTENSION);
@@ -43,29 +76,6 @@ if (isset($_POST['import'])) {
 
                 $mitra = mysqli_real_escape_string($mysqli, $row[0]);
                 $lokasi = mysqli_real_escape_string($mysqli, $row[1]);
-
-                // Fungsi untuk mengkonversi format tanggal
-                function convertDate($value) {
-                    // Jika nilai adalah angka (format Excel internal)
-                    if (is_numeric($value)) {
-                        return \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($value)->format('Y-m-d');
-                    }
-                    
-                    // Jika nilai adalah string dengan format dd/mm/yyyy
-                    if (preg_match("/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/", $value, $matches)) {
-                        $day = str_pad($matches[1], 2, '0', STR_PAD_LEFT);
-                        $month = str_pad($matches[2], 2, '0', STR_PAD_LEFT);
-                        $year = $matches[3];
-                        return "$year-$month-$day";
-                    }
-                    
-                    // Jika nilai adalah string dengan format yyyy-mm-dd
-                    if (preg_match("/^\d{4}-\d{2}-\d{2}$/", $value)) {
-                        return $value;
-                    }
-                    
-                    throw new Exception("Format tanggal tidak valid. Gunakan format DD/MM/YYYY atau YYYY-MM-DD");
-                }
 
                 try {
                     $tanggal_mulai = convertDate($row[2]);

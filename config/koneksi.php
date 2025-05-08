@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 ob_start();
 error_reporting(E_ALL);
 // error_reporting(0);

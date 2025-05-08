@@ -15,55 +15,60 @@
           <h3 class="card-title">Praktek Kerja Industri</h3>
           <div class="float-left">
             <a href="?pages=<?php echo $_GET['pages'] ?>&filter=<?php echo 'tambah' ?>" class="btn btn-primary">Tambah
+              Data
               Data</a>
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#importModal">
               <i class="fas fa-file-excel"></i> Import Excel
             </button>
+            <button type="button" id="deleteSelected" class="btn btn-danger" style="display:none">
+              <i class="fas fa-trash"></i> Hapus Terpilih
+            </button>
           </div>
         </div><!-- /.card-header -->
         <div class="card-body table-responsive">
-          <table class="table table-striped table-bordered">
-            <thead>
-              <tr>
-                <th>No</th>
-                <th>Mitra DU/DI</th>
-                <th>Lokasi</th>
-                <th>Lamanya (Bulan)</th>
-                <th>Guru Pendamping</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php  
+          <form id="deleteForm" method="POST">
+            <table id="datatable" class="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th><input type="checkbox" id="checkAll"></th>
+                  <th>No</th>
+                  <th>Mitra DU/DI</th>
+                  <th>Lokasi</th>
+                  <th>Lamanya (Bulan)</th>
+                  <th>Guru Pendamping</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php  
                             $nomor=1;
                             $eskul = mysqli_query($mysqli,"SELECT * FROM prakerin WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' ORDER BY id_prakerin ASC");
                             while($reskul = mysqli_fetch_array($eskul)){
-
                                 $pendamping = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM users WHERE id_user='$reskul[id_user]'"));
-
                                 $tanggalawal = date_create($reskul['tanggal_mulai']);
                                 $tanggalakhir = date_create($reskul['tanggal_akhir']);
-
                                 $interval = date_diff($tanggalawal, $tanggalakhir); 
-                              
                             ?>
-              <tr>
-                <td><?php echo $nomor++ ?></td>
-                <td><?php echo $reskul['mitra'] ?></td>
-                <td><?php echo $reskul['lokasi'] ?></td>
-                <td><?php echo $interval->m . ' Bulan' ?></td>
-                <td><?php echo $pendamping['nama'] ?></td>
-                <td>
-                  <a href="?pages=<?php echo $_GET['pages'] ?>&filter=<?php echo 'edit' ?>&dataID=<?php echo $reskul['id_prakerin'] ?>"
-                    class="btn btn-warning"><i class="fa fa-pencil"></i> Detail</a>
+                <tr>
+                  <td><input type="checkbox" class="checkbox" name="ids[]"
+                      value="<?php echo $reskul['id_prakerin']; ?>"></td>
+                  <td><?php echo $nomor++ ?></td>
+                  <td><?php echo $reskul['mitra'] ?></td>
+                  <td><?php echo $reskul['lokasi'] ?></td>
+                  <td><?php echo $interval->m . ' Bulan' ?></td>
+                  <td><?php echo $pendamping['nama'] ?></td>
+                  <td>
+                    <a href="?pages=<?php echo $_GET['pages'] ?>&filter=<?php echo 'edit' ?>&dataID=<?php echo $reskul['id_prakerin'] ?>"
+                      class="btn btn-warning"><i class="fa fa-pencil"></i> Detail</a>
 
-                  <a href="?pages=<?php echo $_GET['pages'] ?>&filter=<?php echo 'hapus-prakerin' ?>&dataID=<?php echo $reskul['id_prakerin'] ?>"
-                    onclick="return confirm('Yakin ?')" class="btn btn-danger"><i class="fas fa-trash"></i> Hapus</a>
-                </td>
-              </tr>
-              <?php } ?>
-            </tbody>
-          </table>
+                    <a href="?pages=<?php echo $_GET['pages'] ?>&filter=<?php echo 'hapus-prakerin' ?>&dataID=<?php echo $reskul['id_prakerin'] ?>"
+                      onclick="return confirm('Yakin ?')" class="btn btn-danger"><i class="fas fa-trash"></i> Hapus</a>
+                  </td>
+                </tr>
+                <?php } ?>
+              </tbody>
+            </table>
+          </form>
         </div>
       </div>
     </div><!-- /.row -->
@@ -74,16 +79,16 @@ if (isset($_SESSION['flash'])) {
     $flash = $_SESSION['flash'];
     unset($_SESSION['flash']);
     ?>
-    <script>
-        Swal.fire({
-            title: '<?php echo $flash['type'] === 'success' ? 'Berhasil!' : 'Perhatian!'; ?>',
-            text: '<?php echo str_replace("\n", "\\n", addslashes($flash['message'])); ?>',
-            icon: '<?php echo $flash['type']; ?>',
-            width: '600px',
-            padding: '3em'
-        });
-    </script>
-    <?php
+<script>
+Swal.fire({
+  title: '<?php echo $flash['type'] === 'success' ? 'Berhasil!' : 'Perhatian!'; ?>',
+  text: '<?php echo str_replace("\n", "\\n", addslashes($flash['message'])); ?>',
+  icon: '<?php echo $flash['type']; ?>',
+  width: '600px',
+  padding: '3em'
+});
+</script>
+<?php
 }
 ?>
 
@@ -100,7 +105,7 @@ if (isset($_SESSION['flash'])) {
           <div class="form-group">
             <label>Pilih File Excel (Format: .xlsx)</label>
             <input type="file" name="file_excel" class="form-control" required accept=".xlsx">
-            <small class="text-muted">Download <a href="assets/format/format_import_prakerin.xlsx">Format
+            <small class="text-muted">Download <a href="../assets\format\format_import_prakerin.xlsx">Format
                 Excel</a></small>
           </div>
           <div class="modal-footer">
@@ -451,18 +456,63 @@ window.location.href =
       ?>
 
 <?php }elseif($_GET['filter']=="hapus-prakerin"){ 
+    // Fix the typo in semester variable and combine the queries
+    $hapus_prakerin = mysqli_query($mysqli, "DELETE FROM prakerin WHERE id_prakerin='$_GET[dataID]'");
+    $hapus_siswa_prakerin = mysqli_query($mysqli, "DELETE FROM siswa_prakerin WHERE id_prakerin='$_GET[dataID]'");
 
-      $hapuspembina = mysqli_query($mysqli,"DELETE FROM prakerin WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_prakerin='$_GET[dataID]'");
-      $hapusprakerin = mysqli_query($mysqli,"DELETE FROM siswa_prakerin WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_prakerin='$_GET[dataID]'");
-      
-
-      if ($hapuspembina || $hapusprakerin) {
-          ?><script type="text/javascript">
-alert('Berhasil');
-window.location.href = "?pages=<?php echo $_GET['pages'] ?>";
+    if ($hapus_prakerin && $hapus_siswa_prakerin) {
+        ?><script type="text/javascript">
+Swal.fire({
+  title: "Berhasil!",
+  text: "Data prakerin berhasil dihapus",
+  icon: "success"
+}).then((result) => {
+  window.location.href = "?pages=<?php echo $_GET['pages'] ?>";
+});
 </script><?php
-        }
-
-      ?>
+    } else {
+        ?><script type="text/javascript">
+Swal.fire({
+  title: "Gagal!",
+  text: "Gagal menghapus data prakerin",
+  icon: "error"
+});
+</script><?php
+    }
+?>
 
 <?php } ?>
+
+<?php
+// Handle multiple delete
+if (isset($_POST['delete_selected']) && !empty($_POST['ids'])) {
+    $ids = $_POST['ids'];
+    $success = true;
+    
+    foreach ($ids as $id) {
+        $id = mysqli_real_escape_string($mysqli, $id);
+        $delete_prakerin = mysqli_query($mysqli, "DELETE FROM prakerin WHERE id_prakerin='$id'");
+        $delete_siswa_prakerin = mysqli_query($mysqli, "DELETE FROM siswa_prakerin WHERE id_prakerin='$id'");
+        
+        if (!$delete_prakerin || !$delete_siswa_prakerin) {
+            $success = false;
+            break;
+        }
+    }
+
+    if ($success) {
+        $_SESSION['flash'] = [
+            'type' => 'success',
+            'message' => 'Data prakerin berhasil dihapus'
+        ];
+    } else {
+        $_SESSION['flash'] = [
+            'type' => 'error',
+            'message' => 'Gagal menghapus beberapa data prakerin'
+        ];
+    }
+    
+    echo "<script>window.location.href = '?pages=" . $_GET['pages'] . "';</script>";
+    exit;
+}
+?>

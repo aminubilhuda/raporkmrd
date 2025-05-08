@@ -95,7 +95,7 @@
                   <tr>
                     <td style="width: 30%;">Dimensi</td>
                     <td>
-                      <select name="id_dimensi" id="dimensi" class="form-control" required="" onchange="getElemen()">
+                      <select name="id_dimensi" id="dimensi" class="form-control" required="">
                         <option value="">--Pilih Dimensi--</option>
                         <?php
                                                 $dimensi_query = mysqli_query($mysqli, "SELECT * FROM dimensi ORDER BY id_dimensi ASC");
@@ -109,7 +109,7 @@
                   <tr>
                     <td>Elemen</td>
                     <td>
-                      <select name="id_elemen" id="elemen" class="form-control" required="" disabled>
+                      <select name="id_elemen" id="elemen" class="form-control" required="">
                         <option value="">--Pilih Elemen--</option>
                       </select>
                     </td>
@@ -143,54 +143,52 @@
   </div><!-- /.row -->
 </section><!-- /.content -->
 
-<script>
-function getElemen() {
-  var dimensiId = document.getElementById('dimensi').value;
-  var elemenSelect = document.getElementById('elemen');
+<!-- jQuery first, then our custom script -->
+<script type="text/javascript">
+// Wait for document to be fully loaded and jQuery to be available
+document.addEventListener('DOMContentLoaded', function() {
+  // Set up the onChange event for dimensi dropdown
+  document.getElementById('dimensi').addEventListener('change', function() {
+    var dimensiId = this.value;
+    var elemenSelect = document.getElementById('elemen');
 
-  // Reset elemen dropdown
-  elemenSelect.innerHTML = '<option value="">--Pilih Elemen--</option>';
+    // Reset elemen dropdown
+    elemenSelect.innerHTML = '<option value="">--Pilih Elemen--</option>';
 
-  if (dimensiId !== '') {
-    // Enable elemen dropdown
-    elemenSelect.disabled = false;
+    if (dimensiId !== '') {
+      console.log("Fetching elemen for dimensi ID: " + dimensiId);
 
-    // Use jQuery for AJAX request which is more reliable
-    $.ajax({
-      url: '?pages=managemen-sub-elemen&action=get_elemen&id_dimensi=' + dimensiId,
-      type: 'GET',
-      dataType: 'json',
-      success: function(data) {
-        // Populate elemen dropdown
-        for (var i = 0; i < data.length; i++) {
-          var option = document.createElement('option');
-          option.value = data[i].id_elemen;
-          option.text = data[i].kode_elemen + ' - ' + data[i].elemen;
-          elemenSelect.appendChild(option);
-        }
-        console.log("Elemen dropdown populated successfully");
-      },
-      error: function(xhr, status, error) {
-        console.error("AJAX Error:", error);
-      }
-    });
-  } else {
-    // Disable elemen dropdown if no dimensi selected
-    elemenSelect.disabled = true;
-  }
-}
+      // Use vanilla JavaScript fetch API instead of jQuery
+      fetch('index.php?pages=managemen-sub-elemen&action=get_elemen&id_dimensi=' + dimensiId)
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(data) {
+          console.log("Data received:", data);
 
-// Execute once the document is fully loaded
-$(document).ready(function() {
-  // Add change event with jQuery as well
-  $('#dimensi').on('change', function() {
-    getElemen();
+          // Populate elemen dropdown
+          if (data && data.length > 0) {
+            for (var i = 0; i < data.length; i++) {
+              var option = document.createElement('option');
+              option.value = data[i].id_elemen;
+              option.text = data[i].kode_elemen + ' - ' + data[i].elemen;
+              elemenSelect.appendChild(option);
+            }
+            console.log("Elemen dropdown populated with " + data.length + " items");
+          } else {
+            console.log("No elemen data returned for dimensi ID: " + dimensiId);
+          }
+        })
+        .catch(function(error) {
+          console.error("Fetch error:", error);
+        });
+    }
   });
 });
 </script>
 
 <?php
-// AJAX handler for getting elemen based on dimensi
+// Move AJAX handler to the top of the PHP code so it executes before any HTML output
 if (isset($_GET['action']) && $_GET['action'] == 'get_elemen') {
     $id_dimensi = $_GET['id_dimensi'];
     $elemen_query = mysqli_query($mysqli, "SELECT * FROM elemen WHERE id_dimensi = $id_dimensi ORDER BY kode_elemen ASC");
@@ -200,6 +198,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_elemen') {
         $elemen_list[] = $elemen;
     }
     
+    // Send proper JSON headers
+    header('Content-Type: application/json');
     echo json_encode($elemen_list);
     exit;
 }
@@ -319,6 +319,14 @@ alert('Gagal menambahkan data: <?php echo mysqli_error($mysqli); ?>');
             </div>
 
             <script>
+            // Wait for document to be fully loaded
+            document.addEventListener('DOMContentLoaded', function() {
+              // Set up the onChange event for dimensi dropdown
+              document.getElementById('dimensi_edit').addEventListener('change', function() {
+                getElemenEdit();
+              });
+            });
+
             function getElemenEdit() {
               var dimensiId = document.getElementById('dimensi_edit').value;
               var elemenSelect = document.getElementById('elemen_edit');
@@ -326,34 +334,35 @@ alert('Gagal menambahkan data: <?php echo mysqli_error($mysqli); ?>');
               // Reset elemen dropdown
               elemenSelect.innerHTML = '<option value="">--Pilih Elemen--</option>';
 
-              // Use jQuery for AJAX request
-              $.ajax({
-                url: '?pages=managemen-sub-elemen&action=get_elemen&id_dimensi=' + dimensiId,
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                  // Populate elemen dropdown
-                  for (var i = 0; i < data.length; i++) {
-                    var option = document.createElement('option');
-                    option.value = data[i].id_elemen;
-                    option.text = data[i].kode_elemen + ' - ' + data[i].elemen;
-                    elemenSelect.appendChild(option);
-                  }
-                  console.log("Elemen edit dropdown populated successfully");
-                },
-                error: function(xhr, status, error) {
-                  console.error("AJAX Error:", error);
-                }
-              });
-            }
+              if (dimensiId !== '') {
+                console.log("Edit page: Fetching elemen for dimensi ID: " + dimensiId);
 
-            // Execute once the document is fully loaded
-            $(document).ready(function() {
-              // Add change event with jQuery as well
-              $('#dimensi_edit').on('change', function() {
-                getElemenEdit();
-              });
-            });
+                // Use vanilla JavaScript fetch API instead of jQuery
+                fetch('index.php?pages=managemen-sub-elemen&action=get_elemen&id_dimensi=' + dimensiId)
+                  .then(function(response) {
+                    return response.json();
+                  })
+                  .then(function(data) {
+                    console.log("Edit page data received:", data);
+
+                    // Populate elemen dropdown
+                    if (data && data.length > 0) {
+                      for (var i = 0; i < data.length; i++) {
+                        var option = document.createElement('option');
+                        option.value = data[i].id_elemen;
+                        option.text = data[i].kode_elemen + ' - ' + data[i].elemen;
+                        elemenSelect.appendChild(option);
+                      }
+                      console.log("Edit page: Elemen dropdown populated with " + data.length + " items");
+                    } else {
+                      console.log("Edit page: No elemen data returned for dimensi ID: " + dimensiId);
+                    }
+                  })
+                  .catch(function(error) {
+                    console.error("Edit page fetch error:", error);
+                  });
+              }
+            }
             </script>
 
             <?php  
