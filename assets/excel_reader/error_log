@@ -1,0 +1,28 @@
+[01-Apr-2025 21:27:56 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; OLERead has a deprecated constructor in /home3/abdinega/km.abdinegara.com/assets/excel_reader/excel_reader2.php on line 117
+[01-Apr-2025 21:27:56 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; Spreadsheet_Excel_Reader has a deprecated constructor in /home3/abdinega/km.abdinegara.com/assets/excel_reader/excel_reader2.php on line 332
+[01-Apr-2025 21:27:56 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function split() in /home3/abdinega/km.abdinegara.com/assets/excel_reader/excel_reader2.php:472
+Stack trace:
+#0 /home3/abdinega/km.abdinegara.com/assets/excel_reader/excel_reader2.php(1124): Spreadsheet_Excel_Reader->_format_value('0', 123456789, 1)
+#1 /home3/abdinega/km.abdinegara.com/assets/excel_reader/excel_reader2.php(1001): Spreadsheet_Excel_Reader->_getCellDetails(21544, 123456789, 2)
+#2 /home3/abdinega/km.abdinegara.com/assets/excel_reader/excel_reader2.php(911): Spreadsheet_Excel_Reader->_parsesheet(21544)
+#3 /home3/abdinega/km.abdinegara.com/assets/excel_reader/excel_reader2.php(636): Spreadsheet_Excel_Reader->_parse()
+#4 /home3/abdinega/km.abdinegara.com/assets/excel_reader/excel_reader2.php(543): Spreadsheet_Excel_Reader->read('example.xls')
+#5 /home3/abdinega/km.abdinegara.com/assets/excel_reader/example.php(5): Spreadsheet_Excel_Reader->Spreadsheet_Excel_Reader('example.xls')
+#6 {main}
+  thrown in /home3/abdinega/km.abdinegara.com/assets/excel_reader/excel_reader2.php on line 472
+[01-Apr-2025 21:27:58 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; OLERead has a deprecated constructor in /home3/abdinega/km.abdinegara.com/assets/excel_reader/excel_reader.php on line 95
+[01-Apr-2025 21:27:58 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; Spreadsheet_Excel_Reader has a deprecated constructor in /home3/abdinega/km.abdinegara.com/assets/excel_reader/excel_reader.php on line 312
+[01-Apr-2025 21:33:56 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; OLERead has a deprecated constructor in /home3/abdinega/km.abdinegara.com/assets/excel_reader/excel_reader.php on line 95
+[01-Apr-2025 21:33:56 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; Spreadsheet_Excel_Reader has a deprecated constructor in /home3/abdinega/km.abdinegara.com/assets/excel_reader/excel_reader.php on line 312
+[01-Apr-2025 21:33:58 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; OLERead has a deprecated constructor in /home3/abdinega/km.abdinegara.com/assets/excel_reader/excel_reader2.php on line 117
+[01-Apr-2025 21:33:58 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; Spreadsheet_Excel_Reader has a deprecated constructor in /home3/abdinega/km.abdinegara.com/assets/excel_reader/excel_reader2.php on line 332
+[01-Apr-2025 21:33:58 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function split() in /home3/abdinega/km.abdinegara.com/assets/excel_reader/excel_reader2.php:472
+Stack trace:
+#0 /home3/abdinega/km.abdinegara.com/assets/excel_reader/excel_reader2.php(1124): Spreadsheet_Excel_Reader->_format_value('0', 123456789, 1)
+#1 /home3/abdinega/km.abdinegara.com/assets/excel_reader/excel_reader2.php(1001): Spreadsheet_Excel_Reader->_getCellDetails(21544, 123456789, 2)
+#2 /home3/abdinega/km.abdinegara.com/assets/excel_reader/excel_reader2.php(911): Spreadsheet_Excel_Reader->_parsesheet(21544)
+#3 /home3/abdinega/km.abdinegara.com/assets/excel_reader/excel_reader2.php(636): Spreadsheet_Excel_Reader->_parse()
+#4 /home3/abdinega/km.abdinegara.com/assets/excel_reader/excel_reader2.php(543): Spreadsheet_Excel_Reader->read('example.xls')
+#5 /home3/abdinega/km.abdinegara.com/assets/excel_reader/example.php(5): Spreadsheet_Excel_Reader->Spreadsheet_Excel_Reader('example.xls')
+#6 {main}
+  thrown in /home3/abdinega/km.abdinegara.com/assets/excel_reader/excel_reader2.php on line 472

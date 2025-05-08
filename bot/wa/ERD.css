@@ -1,0 +1,38 @@
++-----------+                                      +-----------+                                 +-----------+
+|  Jurusan  |                                      |   Guru    |                                 |   Kelas   |
+|-----------|                                      |-----------|                                 |-----------|
+|ID_Jurusan |<-----------------------------------  |ID_Guru    |  <----------------------------  |ID_Kelas   |
+|Nama       |  "Siswa 1 memiliki 1 Jurusan"        |Nama       |  "Guru 1 Wali M Kelas"          |Nama_Kelas |
++-----------+                                      |Alamat     |                                 |Tingkat    |
+        |                                          |Tgl_Lahir  |                                 |ID_Guru_Wali|
+        |                                          |Jenis_Kelamin|                              +-----------+
+        |                                          +-----------+                                      |
+        |                                                                                             |
+        v                                                                                             |
++-----------+                                                                                         |
+|   Siswa   |                                                                                         |
+|-----------|                                                                                         |
+|ID_Siswa   |  "Siswa M di Kelas 1"                                                                   |
+|Nama       |------------------------------------>                                                    |
+|Alamat     |                                                                                         |
+|Tgl_Lahir  |                                                                                         v
+|Jns_Kelamin|                                                                                  +-----------+
+|ID_Jurusan |                                                                                  |   Mapel   |
+|ID_Kelas   |                                                                                  |-----------|
++-----------+                                                                                  |ID_Mapel   |
+        |                                                                                      |Nama_Mapel |
+        |                                                                                      |ID_Guru    |
+        |                                                                                      +-----------+
+        |                                                                                             |
+        |  "Siswa M Mendapatkan Nilai dari 1 Mapel"                                                   |
+        |                                                                                             |
+        v                                                                                             |
++-----------+                                                                                         |
+|   Nilai   |<----------------------------------------------------------------------------------------+
+|-----------|                "Mapel 1 memiliki banyak Nilai dari Siswa"                               |
+|ID_Nilai   |                                                                                         |
+|ID_Siswa   |                                                                                         |
+|ID_Mapel   |                                                                                         |
+|Nilai      |                                                                                         |
+|Semester   |                                                                                         |
++-----------+

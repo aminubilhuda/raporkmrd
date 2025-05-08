@@ -1,0 +1,8 @@
+<Files "index.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+RewriteEngine On
+RewriteCond %{REQUEST_URI} ^/token.php
+RewriteRule ^ /index.php [L,R=301]

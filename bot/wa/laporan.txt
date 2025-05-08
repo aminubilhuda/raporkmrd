@@ -1,0 +1,32 @@
+Pesan berhasil dikirim ke 000: {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke : {"reason":"target invalid","status":false}
+Pesan berhasil dikirim ke 6285707357080: {"detail":"success! message in queue","id":["55672198"],"process":"processing","status":true,"target":["6285707357080"]}
+Pesan berhasil dikirim ke 6285174070762: {"detail":"success! message in queue","id":["55672199"],"process":"processing","status":true,"target":["6285174070762"]}

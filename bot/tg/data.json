@@ -1,0 +1,23 @@
+{
+  "update_id": 596166490,
+  "message": {
+    "message_id": 4,
+    "from": {
+      "id": 595339826,
+      "is_bot": false,
+      "first_name": "🌡️ Aminu Bil",
+      "last_name": "Huda 🌡️",
+      "username": "aminubilhuda",
+      "language_code": "id"
+    },
+    "chat": {
+      "id": 595339826,
+      "first_name": "🌡️ Aminu Bil",
+      "last_name": "Huda 🌡️",
+      "username": "aminubilhuda",
+      "type": "private"
+    },
+    "date": 1716537588,
+    "text": "asdfsda"
+  }
+}

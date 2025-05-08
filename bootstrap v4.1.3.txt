@@ -1,0 +1,6 @@
+id="datatable" class="table table-bordered dt-responsive nowrap"
+                        style="border-collapse: collapse; border-spacing: 0; width: 100%;"
+
+ubah code HTML dan style CSS table menjadi code versi bootstrap v4.1.3 tanpa menghilangkan atau merubah code PHPnya
+
+saya ingin ketika saya memasukkan memasukkan angka kedalam text area dan dipisah dengan enter maka dia akan di inputkan kedalam kolom inputan sesuai jumlah siswa yang ada yang saya klik kolomnya
