@@ -26,8 +26,8 @@ if ($current_file != 'login.php') {
 require_once('fungsi_validasi.php');
 
 $host = "localhost";
-$user = "abdinega_abdira";
-$pass = "abdinega_abdira";
+$user = "root";
+$pass = "";
 $db = "abdinega_db_raporkm";
 
 //Menggunakan objek mysqli untuk membuat koneksi dan menyimpanya dalam variabel $mysqli

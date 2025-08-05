@@ -129,8 +129,11 @@
         $siswa= $_POST['siswa'];
         $nilai = $_POST['nilai'];
 
-        $jumlahsiswa = count($siswa);
-        for ($i=0; $i <$jumlahsiswa ; $i++) { 
+        // $jumlahsiswa = count($siswa);
+        $jumlahdata = count($nilai);
+        
+        for ($i=0; $i <$jumlahdata ; $i++) {
+            if ($nilai[$i] == "") continue;
 
             $ceknilai = mysqli_num_rows(mysqli_query($mysqli,"SELECT * FROM nilai_proyek WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND proyek='$_GET[orderID]' AND id_kelas='$_GET[dataID]' AND id_sub_elemen='$subelemen[$i]' AND id_siswa='$siswa[$i]'"));
             if($ceknilai == 0){

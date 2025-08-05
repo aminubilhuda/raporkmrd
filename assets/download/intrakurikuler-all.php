@@ -200,7 +200,21 @@ h3 {
             <td style="width: 30%; text-align: left; padding: 3px; vertical-align: middle; " rowspan="2">
                 <?php echo $rmapel['nama_mapel'] ?></td>
             <td style="width: 15%; text-align: center; vertical-align: middle; " rowspan="2">
-                <?php echo round($nilai['nilai'],0) ?>
+                <!-- nilai kurang dari 80 merah-->
+                 <?php
+                    if (round($nilai['nilai'], 0) == 0 || $nilai['nilai'] == "") {
+                        echo "<span style='color: red;'>0</span>";
+                    } else if (round($nilai['nilai'], 0) < 75) {
+                        echo "<span style='color: red;'>" . round($nilai['nilai'], 0) . "</span>";
+                    } else {
+                        echo "<span style='color: black;'>" . round($nilai['nilai'], 0) . "</span>";
+                    }
+                ?>
+                
+                <?php
+                // echo round($nilai['nilai'],0)
+                ?>
+                
             </td>
             <td style="width: 50%; text-align: left; padding: 3px; vertical-align: middle; ">
                 <?php  
@@ -219,7 +233,7 @@ h3 {
                     }
 
                     // Ambil tujuan pembelajaran terkait dengan nilai tertinggi
-                    $tujuanmax = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM tujuan_pembelajaran WHERE id_tujuan='$datamax[id_tujuan]'"));
+                    $tujuanmax = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM tujuan_pembelajaran WHERE id_tujuan='$datamax[id_tujuan]' AND tahun='$sekolah[tahun]' AND semester='$sekolah[semester]'"));
                     
                     if (!empty($tujuanmax['tujuan'])) {
                         echo $tujuanmax['tujuan'];
@@ -249,7 +263,7 @@ h3 {
                     }
 
                 // Ambil tujuan pembelajaran terkait dengan nilai terendah
-                $tujuanmin = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM tujuan_pembelajaran WHERE id_tujuan='$datamin[id_tujuan]'"));
+                $tujuanmin = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM tujuan_pembelajaran WHERE id_tujuan='$datamin[id_tujuan]' AND tahun='$sekolah[tahun]' AND semester='$sekolah[semester]'"));
                 
                 if (!empty($tujuanmin['tujuan'])) {
                     echo $tujuanmin['tujuan'];
@@ -266,12 +280,13 @@ h3 {
 
 
     </table>
-
+    
+    <div style="page-break-inside: avoid;">
     <?php  
-    $eskul = mysqli_query($mysqli,"SELECT * FROM siswa_prakerin WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_siswa='$siswa[id_siswa]'");
-    if (mysqli_num_rows($eskul) > 0) { // Cek apakah ada data prakerin
+        $eskul = mysqli_query($mysqli,"SELECT * FROM siswa_prakerin WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_siswa='$siswa[id_siswa]'");
+        if (mysqli_num_rows($eskul) > 0) { // Cek apakah ada data prakerin
     ?>
-    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+    <table style="width: 100%; border-collapse: collapse; margin-top: 20px; ">
         <tr>
             <td style="width: 100%; text-align: left;"><b>PRAKTIK KERJA INDUSTRI</b></td>
         </tr>
@@ -309,6 +324,7 @@ h3 {
         <?php } ?>
     </table>
     <?php } ?>
+    </div>
 
     <div style="page-break-inside: avoid;">
         <!-- ekstra terisi dan kosong-->
@@ -421,7 +437,8 @@ h3 {
             </tr>
         </table>
     </div>
-
+    
+<div style="page-break-inside: avoid;">
     <?php if($sekolah['semester']==2){ ?>
     <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
         <tr>
@@ -441,6 +458,7 @@ h3 {
             </td>
         </tr>
     </table>
+</div>
 
     <?php } ?>
     <div style="page-break-inside: avoid;">

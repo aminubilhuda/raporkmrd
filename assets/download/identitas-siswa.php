@@ -99,7 +99,15 @@
     <page_footer></page_footer>
 
     <p style="text-align:center; margin-top:65px;">
-        <img src="../dist/img/<?php echo $sekolah['logo_prov']?>" style="width:25%;">
+        <!--<img src="../dist/img/<?php echo $sekolah['logo_prov']?>" style="width:25%;">-->
+        <?php
+        $logoProvPath = '../dist/img/' . $sekolah['logo_prov'];
+        if (file_exists($logoProvPath) && !empty($sekolah['logo_prov'])) {
+            echo '<img src="' . $logoProvPath . '" style="width:25%;">';
+        } else {
+            echo '<p style="text-align:center; font-size:14px;"><b>Logo Kosong</b></p>';
+        }
+        ?>
     </p>
 
     <table width="790px" style="border-collapse: collapse; font-size: 11px; margin-top: 20px;">
@@ -116,7 +124,15 @@
     </table>
 
     <p style="text-align:center; margin-top:30px;">
-        <img src="../dist/img/<?php echo $sekolah['logo']?>" style="width:25%;">
+        <!--<img src="../dist/img/<?php echo $sekolah['logo']?>" style="width:25%;">-->
+        <?php
+            $logoSekolahPath = '../dist/img/' . $sekolah['logo'];
+            if (file_exists($logoSekolahPath) && !empty($sekolah['logo'])) {
+                echo '<img src="' . $logoSekolahPath . '" style="width:25%;">';
+            } else {
+                echo '<p style="text-align:center; font-size:14px;"><b>Logo Kosong</b></p>';
+            }
+        ?>
     </p>
 
     <table width="790px" style="border-collapse: collapse; font-size: 11px; margin-top: 20px;">

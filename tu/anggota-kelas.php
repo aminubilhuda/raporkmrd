@@ -228,15 +228,13 @@
                     </script><?php
                         } else {
                             for ($i = 0; $i < $jumlahsiswa; $i++) {
-                                $simpan = mysqli_query($mysqli, "INSERT INTO siswa_kelas SET tahun='$sekolah[tahun]', semester='$sekolah[semester]', id_tingkat='$kelas[id_tingkat]', id_kelas='$_GET[dataID]', id_siswa='$siswa[$i]', status='1'");
-                                if ($simpan) {
-                                    ?><script type="text/javascript">
+                                $simpan = mysqli_query($mysqli, "INSERT INTO siswa_kelas SET tahun='$sekolah[tahun]', semester='$sekolah[semester]', id_tingkat='$kelas[id_tingkat]', id_kelas='$_GET[dataID]', id_siswa='$siswa[$i]', status='1'") or die(mysqli_error($mysqli));
+                            }
+                            ?><script type="text/javascript">
                     alert('Berhasil menambahkan <?php echo $jumlahsiswa ?> ke dalam kelas');
                     window.location.href =
                         "?pages=anggota-kelas&filter=<?php echo $_GET['filter'] ?>&dataID=<?php echo $_GET['dataID'] ?>";
                     </script><?php
-                                }
-                            }
                         }
                     }
                     ?>

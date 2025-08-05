@@ -141,19 +141,33 @@ if (isset($_POST['uploaddata'])) {
     // alihkan halaman ke index.php
     ?>
 <script type="text/javascript">
-let message = "Berhasil Mengupload <?php echo $jumlah_baris - 3 ?> Data";
-<?php if (!empty($gagal)) { ?>
-message += "\ndan Data yang gagal diinput:\n<?php echo implode('\n', $gagal); ?>";
+<?php if (empty($gagal)) { ?>
+    swal.fire({
+        title: "Berhasil!",
+        text: "Berhasil mengupload <?php echo $jumlah_baris - 3 ?> data.",
+        icon: "success",
+        width: '600px',
+        padding: '3em',
+    }).then(function() {
+        window.location.href = "?pages=kesiswaan";
+    });
+<?php } else { ?>
+    let failedMessages = "<ul>";
+    <?php foreach ($gagal as $fail_msg) { ?>
+        failedMessages += "<li><?php echo addslashes($fail_msg); ?></li>";
+    <?php } ?>
+    failedMessages += "</ul>";
+
+    swal.fire({
+        title: "Peringatan!",
+        html: "Berhasil mengupload <?php echo ($jumlah_baris - 3) - count($gagal); ?> data.<br><br>Data yang gagal diinput:<br>" + failedMessages,
+        icon: "warning",
+        width: '600px',
+        padding: '3em',
+    }).then(function() {
+        window.location.href = "?pages=kesiswaan";
+    });
 <?php } ?>
-swal.fire({
-    title: "Berhasil!",
-    text: message,
-    icon: "success",
-    width: '600px', // Perbesar modal sweet alert
-    padding: '3em', // Tambahkan padding untuk memperbesar modal
-}).then(function() {
-    window.location.href = "?pages=kesiswaan";
-});
 </script>
 <?php
 }

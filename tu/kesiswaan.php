@@ -51,13 +51,25 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         <tbody>
                             <?php  
                             $nomor=1;
-                            $siswa = mysqli_query($mysqli, "SELECT * FROM siswa 
+                            $siswa = mysqli_query($mysqli, "SELECT
+                                siswa.id_siswa,
+                                siswa.nama_siswa,
+                                siswa.nis,
+                                siswa.nisn,
+                                siswa.terima_kelas,
+                                siswa.tempat_lahir,
+                                siswa.tanggal_lahir,
+                                jenis_kelamin.jenis_kelamin,
+                                agama.agama,
+                                kompetensi_keahlian.kompetensi_keahlian,
+                                kelas.nama_kelas
+                                FROM siswa
                                 JOIN jenis_kelamin ON siswa.kelamin = jenis_kelamin.id_jenis_kelamin
                                 JOIN agama ON siswa.agama = agama.id_agama
                                 JOIN kompetensi_keahlian ON siswa.jurusan=kompetensi_keahlian.id_kompetensi_keahlian
-                                -- LEFT JOIN siswa_kelas ON siswa.id_siswa = siswa_kelas.id_siswa
-                                -- LEFT JOIN kelas ON siswa_kelas.id_kelas = kelas.id_kelas
-                                WHERE aktif='1' ORDER BY siswa.id_siswa ASC");
+                                LEFT JOIN siswa_kelas ON siswa.id_siswa = siswa_kelas.id_siswa
+                                LEFT JOIN kelas ON siswa_kelas.id_kelas = kelas.id_kelas
+                                WHERE siswa.aktif='1' ORDER BY siswa.id_siswa ASC");
                             while($rsiswa = mysqli_fetch_array($siswa)) {
                             ?>
                             <tr>
@@ -73,6 +85,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                                 <td><?php echo $rsiswa['agama'] ?></td>
                                 <td><?php echo $rsiswa['tempat_lahir'] ?>, <?php echo $rsiswa['tanggal_lahir'] ?></td>
                                 <td>
+                                    <?php echo "<!-- Debug: ID Siswa = " . $rsiswa['id_siswa'] . " -->"; ?>
                                     <a href="?pages=kesiswaan&filter=edit&dataID=<?php echo $rsiswa['id_siswa'] ?>"
                                         class="btn btn-warning " data-toggle="tooltip" title="Edit">
                                         <i class="fa fa-pencil-alt"></i>
@@ -534,11 +547,11 @@ if (isset($_POST['simpandata'])) {
 <?php }elseif($_GET['filter']=="edit"){ 
     	$siswa = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM siswa WHERE id_siswa='$_GET[dataID]'"));
 
-    	$hubungan_keluarga = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM hubungan_keluarga WHERE id_hubungan_keluarga='$datalulusan[hub_keluarga]'"));
+    	$hubungan_keluarga = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM hubungan_keluarga WHERE id_hubungan_keluarga='$siswa[hub_keluarga]'"));
 
-    	$terima_tingkat = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM kelas WHERE id_kelas='$datalulusan[terima_tingkat]'"));
-    	$tahunkelulusan = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM tahun_pelajaran WHERE id_tahun_pelajaran='$datalulusan[tahun]'"));
-    	$lanjutan = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM tingat_lanjut WHERE id_tingkat_lanjut='$datalulusan[tingkat_lanjut]'"));
+    	$terima_tingkat = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM tingkat WHERE id_tingkat='$siswa[terima_tingkat]'"));
+    	// $tahunkelulusan = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM tahun_pelajaran WHERE id_tahun_pelajaran='$datalulusan[tahun]'"));
+    	// $lanjutan = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM tingat_lanjut WHERE id_tingkat_lanjut='$datalulusan[tingkat_lanjut]'"));
 
     	?>
 <section class="content-header">
@@ -1068,7 +1081,7 @@ swal.fire({
                             <tr>
                                 <td style="width: 30%;">Format Excel Data Siswa</td>
                                 <td>
-                                    <a href="../assets/format/format-data-siswa.xls" class="btn btn-danger ">Download
+                                    <a href="../assets/format/format-upload-siswa.xlsx" class="btn btn-danger ">Download
                                         Format</a>
                                 </td>
                             </tr>

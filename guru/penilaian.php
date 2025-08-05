@@ -132,7 +132,8 @@
                                 AND mapel_siswa.semester=?
                                 AND mapel_siswa.id_mapel=?
                                 AND mapel_siswa.aktif=1
-                                ORDER BY siswa.nama_siswa ASC");
+                                AND siswa.aktif=1
+                                ORDER BY siswa.nis ASC");
                                 $stmt->bind_param("ssssss", $sekolah['tahun'], $sekolah['semester'], $id_kelas, $sekolah['tahun'], $sekolah['semester'], $id_mapel);
                                 $stmt->execute();
                                 $siswakelas = $stmt->get_result();
@@ -406,8 +407,9 @@ Swal.fire({
                                 FROM siswa_kelas 
                                 JOIN siswa ON siswa_kelas.id_siswa = siswa.id_siswa
                                 JOIN mapel_siswa ON siswa_kelas.id_siswa = mapel_siswa.id_siswa
-                                WHERE siswa_kelas.tahun=? AND siswa_kelas.semester=? AND siswa_kelas.id_kelas=? AND mapel_siswa.tahun=? AND mapel_siswa.semester=? AND mapel_siswa.id_mapel=? AND mapel_siswa.aktif=1
-                                ORDER BY siswa.nama_siswa ASC");
+                                WHERE siswa_kelas.tahun=? AND siswa_kelas.semester=? AND siswa_kelas.id_kelas=? AND mapel_siswa.tahun=? AND mapel_siswa.semester=? AND mapel_siswa.id_mapel=? AND mapel_siswa.aktif=1 
+                                AND siswa.aktif=1
+                                ORDER BY siswa.nis ASC");
                                 $stmt->bind_param("ssssss", $sekolah['tahun'], $sekolah['semester'], $id_kelas, $sekolah['tahun'], $sekolah['semester'], $id_mapel);
                                 $stmt->execute();
                                 $siswakelas = $stmt->get_result();
@@ -688,7 +690,8 @@ window.location.href =
                                     JOIN siswa ON siswa_kelas.id_siswa = siswa.id_siswa
                                     JOIN mapel_siswa ON siswa_kelas.id_siswa = mapel_siswa.id_siswa
                                     WHERE siswa_kelas.tahun=? AND siswa_kelas.semester=? AND siswa_kelas.id_kelas=? AND mapel_siswa.tahun=? AND mapel_siswa.semester=? AND mapel_siswa.id_mapel=? AND mapel_siswa.aktif=1
-                                    ORDER BY siswa.nama_siswa ASC");
+                                    AND siswa.aktif=1
+                                    ORDER BY siswa.nis ASC");
                                 $stmt->bind_param("ssssss", $sekolah['tahun'], $sekolah['semester'], $id_kelas, $sekolah['tahun'], $sekolah['semester'], $id_mapel);
                                 $stmt->execute();
                                 $siswakelas = $stmt->get_result();
@@ -1182,7 +1185,8 @@ window.location.href =
                                     JOIN siswa ON siswa_kelas.id_siswa = siswa.id_siswa
                                     JOIN mapel_siswa ON siswa_kelas.id_siswa = mapel_siswa.id_siswa
                                     WHERE siswa_kelas.tahun=? AND siswa_kelas.semester=? AND siswa_kelas.id_kelas=? AND mapel_siswa.tahun=? AND mapel_siswa.semester=? AND mapel_siswa.id_mapel=? AND mapel_siswa.aktif=1
-                                    ORDER BY siswa.nama_siswa ASC");
+                                    AND siswa.aktif=1
+                                    ORDER BY siswa.nis ASC");
                                 $stmt->bind_param("ssssss", $sekolah['tahun'], $sekolah['semester'], $id_kelas, $sekolah['tahun'], $sekolah['semester'], $id_mapel);
                                 $stmt->execute();
                                 $siswakelas = $stmt->get_result();
