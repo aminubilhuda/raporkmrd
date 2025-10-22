@@ -296,3 +296,198 @@ Swal.fire({
                 
     }
 ?>
+
+    <div class="col-md-4">
+        <div class="card border-danger">
+            <div class="card-header text-white">
+                <h3 class="card-title">Backup Database</h3>
+            </div>
+            <div class="card-body">
+                <p>Gunakan fitur ini untuk membuat cadangan database sistem.</p>
+                <form method="POST">
+                    <div class="form-group">
+                        <label>Catatan Backup (Opsional)</label>
+                        <input type="text" name="backup_note" class="form-control" placeholder="Contoh: Sebelum update sistem">
+                    </div>
+                    <button type="submit" name="backup_database" class="btn btn-success btn-block">Buat Backup</button>
+                </form>
+                
+                <!-- Daftar File Backup -->
+                <hr>
+                <h5>File Backup Tersedia:</h5>
+                <?php
+                // Tampilkan daftar file backup
+                $backup_dir = "../backup/";
+                if (is_dir($backup_dir)) {
+                    $backup_files = array_diff(scandir($backup_dir), array('..', '.'));
+                    if (count($backup_files) > 0) {
+                        echo '<div class="backup-list" style="max-height: 200px; overflow-y: auto;">';
+                        foreach ($backup_files as $file) {
+                            if (pathinfo($file, PATHINFO_EXTENSION) === 'sql') {
+                                $file_path = $backup_dir . $file;
+                                $file_date = date("d/m/Y H:i:s", filemtime($file_path));
+                                $file_size = number_format(filesize($file_path) / (1024 * 1024), 2); // Ukuran dalam MB
+                                
+                                echo '<div class="backup-item mb-2 p-2 border rounded" style="background-color: #f8f9fa;">';
+                                echo '<div class="d-flex justify-content-between align-items-center">';
+                                echo '<div>';
+                                echo '<strong>' . htmlspecialchars($file) . '</strong><br>';
+                                echo '<small class="text-muted">Tanggal: ' . $file_date . ' | Ukuran: ' . $file_size . ' MB</small>';
+                                echo '</div>';
+                                echo '<a href="' . $file_path . '" class="btn btn-primary btn-sm" download>Download</a>';
+                                echo '</div>';
+                                echo '</div>';
+                            }
+                        }
+                        echo '</div>';
+                    } else {
+                        echo '<p class="text-muted">Belum ada file backup.</p>';
+                    }
+                } else {
+                    echo '<p class="text-muted">Folder backup tidak ditemukan.</p>';
+                }
+                ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
+// Fungsi untuk membuat backup database
+if (isset($_POST['backup_database'])) {
+    $backup_note = isset($_POST['backup_note']) ? $_POST['backup_note'] : '';
+    
+    // Set timezone ke Asia/Jakarta (WIB)
+    date_default_timezone_set('Asia/Jakarta');
+    
+    // Buat nama file backup berdasarkan tanggal dan waktu
+    $date = date('Y-m-d_H-i-s');
+    $filename = 'backup_rapor_' . $date . '.sql';
+    $backup_dir = '../backup/';
+    
+    // Buat direktori backup jika belum ada
+    if (!is_dir($backup_dir)) {
+        mkdir($backup_dir, 0755, true);
+    }
+    
+    $filepath = $backup_dir . $filename;
+    
+    // Ambil konfigurasi koneksi dari file koneksi.php
+    $koneksi_content = file_get_contents('../config/koneksi.php');
+    
+    // Ekstrak detail koneksi dari file koneksi.php
+    preg_match("/\\\$host\s*=\s*'([^']+)'/", $koneksi_content, $host_match);
+    preg_match("/\\\$user\s*=\s*'([^']+)'/", $koneksi_content, $user_match);
+    preg_match("/\\\$pass\s*=\s*'([^']+)'/", $koneksi_content, $pass_match);
+    preg_match("/\\\$db\s*=\s*'([^']+)'/", $koneksi_content, $db_match);
+    
+    $host = isset($host_match[1]) ? $host_match[1] : 'localhost';
+    $username = isset($user_match[1]) ? $user_match[1] : 'root';
+    $password = isset($pass_match[1]) ? $pass_match[1] : '';
+    $database = isset($db_match[1]) ? $db_match[1] : 'abdinega_db_raporkm';
+    
+    // Fungsi untuk membuat backup SQL
+    function backup_tables($host, $username, $password, $database, $tables = '*') {
+        $return = '';
+        
+        // Koneksi ke database
+        $link = new mysqli($host, $username, $password, $database);
+        
+        // Periksa koneksi
+        if ($link->connect_error) {
+            die('Koneksi gagal: ' . $link->connect_error);
+        }
+        
+        $link->set_charset('utf8');
+        
+        // Membuat komentar header
+        $return .= "-- E-Rapor Backup Database\n";
+        $return .= "-- Tanggal: " . date('Y-m-d H:i:s') . "\n";
+        $return .= "-- Catatan: " . (isset($GLOBALS['backup_note']) ? addslashes($GLOBALS['backup_note']) : 'Tidak ada catatan') . "\n";
+        $return .= "-- --------------------------------------------------------\n\n";
+        
+        if ($tables == '*') {
+            $tables = array();
+            $result = mysqli_query($link, 'SHOW TABLES');
+            while ($row = mysqli_fetch_row($result)) {
+                $tables[] = $row[0];
+            }
+        } else {
+            $tables = is_array($tables) ? $tables : explode(',', $tables);
+        }
+        
+        foreach ($tables as $table) {
+            // Dapatkan struktur tabel
+            $result = mysqli_query($link, 'SELECT * FROM `' . $table . '`');
+            $num_fields = mysqli_num_fields($result);
+            
+            $row2 = mysqli_fetch_row(mysqli_query($link, 'SHOW CREATE TABLE `' . $table . '`'));
+            $return .= "\n\n-- --------------------------------------------------------\n";
+            $return .= "-- Struktur tabel untuk `" . $table . "`\n";
+            $return .= "-- --------------------------------------------------------\n\n";
+            $return .= $row2[1] . ";\n\n";
+            
+            $return .= "-- --------------------------------------------------------\n";
+            $return .= "-- Data untuk tabel `" . $table . "`\n";
+            $return .= "-- --------------------------------------------------------\n\n";
+            
+            // Ambil data dari tabel
+            while ($row = mysqli_fetch_row($result)) {
+                $return .= 'INSERT INTO `' . $table . '` VALUES(';
+                for ($j = 0; $j < $num_fields; $j++) {
+                    $row[$j] = addslashes($row[$j]);
+                    $row[$j] = str_replace("\n", "\\n", $row[$j]);
+                    if (isset($row[$j]) && $row[$j] !== null) {
+                        $return .= '"' . $row[$j] . '"';
+                    } else {
+                        $return .= 'NULL';
+                    }
+                    if ($j < ($num_fields - 1)) {
+                        $return .= ',';
+                    }
+                }
+                $return .= ");\n";
+            }
+            $return .= "\n";
+        }
+        
+        mysqli_close($link);
+        return $return;
+    }
+    
+    // Buat backup
+    $backup_content = backup_tables($host, $username, $password, $database);
+    
+    // Tambahkan catatan ke dalam file backup jika ada
+    if (!empty($backup_note)) {
+        $backup_content = "-- Catatan: " . addslashes($backup_note) . "\n\n" . $backup_content;
+    }
+    
+    // Simpan file backup
+    if (file_put_contents($filepath, $backup_content)) {
+        ?>
+        <script>
+        Swal.fire({
+            title: "Berhasil!",
+            text: "Database telah dibackup ke file <?php echo $filename; ?>",
+            icon: "success",
+        }).then(function() {
+            window.location.href = "?pages=<?php echo $_GET['pages']?>";
+        });
+        </script>
+        <?php
+    } else {
+        ?>
+        <script>
+        Swal.fire({
+            title: "Gagal!",
+            text: "Gagal membuat file backup.",
+            icon: "error",
+        }).then(function() {
+            window.location.href = "?pages=<?php echo $_GET['pages']?>";
+        });
+        </script>
+        <?php
+    }
+}
+?>

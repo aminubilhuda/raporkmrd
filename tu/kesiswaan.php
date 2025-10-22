@@ -7,49 +7,51 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
 <?php if(empty($_GET['filter'])){ ?>
 <section class="content-header">
-    <h1>
-        Kesiswaan Sekolah
-    </h1>
+  <h1>
+    Kesiswaan Sekolah
+  </h1>
 </section>
-
 
 <!-- Main content -->
 <section class="content">
-    <div class="row">
-        <div class="col-md-12">
-            <!-- USERS LIST -->
-            <div class="card border-danger">
-                <div class="card-header text-white">
-                    <h3 class="card-title">Daftar Kesiswaan Sekolah</h3>
-                    <a href="?pages=kesiswaan&filter=<?php echo 'tambah' ?>" class="btn btn-primary ">Tambah
-                        Data</a>
-                    <a href="?pages=kesiswaan&filter=<?php echo 'upload' ?>" class="btn btn-warning ">Uploda
-                        Data</a>
-                    <a href="kesiswaan_export.php" target="_blank" class="btn btn-success ">Export</a>
-                    <div class="float-left">
-                        <!-- Optional tools/buttons can be added here -->
-                    </div>
-                </div><!-- /.card-header -->
-                <div class="card-body table-responsive">
-                    <table id="datatable" class="table table-bordered dt-responsive nowrap"
-                        style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Nama Siswa</th>
-                                <th>NIS</th>
-                                <th>NISN</th>
-                                <th>Kelas</th>
-                                <th>Jurusan</th>
-                                <th>Terima Kelas</th>
-                                <th>Kelamin</th>
-                                <th>Agama</th>
-                                <th>Tempat, Tanggal Lahir</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php  
+  <div class="row">
+    <div class="col-md-12">
+      <!-- USERS LIST -->
+      <div class="card border-danger">
+        <div class="card-header text-white">
+          <h3 class="card-title">Daftar Kesiswaan Sekolah</h3>
+          <a href="?pages=kesiswaan&filter=<?php echo 'tambah' ?>" class="btn btn-primary ">Tambah
+            Data</a>
+          <a href="?pages=kesiswaan&filter=<?php echo 'upload' ?>" class="btn btn-warning ">Uploda
+            Data</a>
+          <a href="kesiswaan_export.php" target="_blank" class="btn btn-success ">Export</a>
+          <div class="float-right">
+            <button type="button" class="btn btn-danger" id="deleteSelected" style="display: none;"
+              onclick="confirmDeleteSelected()">Hapus Terpilih</button>
+          </div>
+        </div><!-- /.card-header -->
+        <form id="deleteForm" action="" method="POST">
+          <div class="card-body table-responsive">
+            <table id="datatable" class="table table-bordered dt-responsive nowrap"
+              style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+              <thead>
+                <tr>
+                  <th><input type="checkbox" id="checkAll"></th>
+                  <th>No</th>
+                  <th>Nama Siswa</th>
+                  <th>NIS</th>
+                  <th>NISN</th>
+                  <th>Kelas</th>
+                  <th>Jurusan</th>
+                  <th>Terima Kelas</th>
+                  <th>Kelamin</th>
+                  <th>Agama</th>
+                  <th>Tempat, Tanggal Lahir</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php  
                             $nomor=1;
                             $siswa = mysqli_query($mysqli, "SELECT
                                 siswa.id_siswa,
@@ -67,363 +69,461 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                                 JOIN jenis_kelamin ON siswa.kelamin = jenis_kelamin.id_jenis_kelamin
                                 JOIN agama ON siswa.agama = agama.id_agama
                                 JOIN kompetensi_keahlian ON siswa.jurusan=kompetensi_keahlian.id_kompetensi_keahlian
-                                LEFT JOIN siswa_kelas ON siswa.id_siswa = siswa_kelas.id_siswa
-                                LEFT JOIN kelas ON siswa_kelas.id_kelas = kelas.id_kelas
-                                WHERE siswa.aktif='1' ORDER BY siswa.id_siswa ASC");
+                                LEFT JOIN (
+                                  SELECT id_siswa, id_kelas 
+                                  FROM siswa_kelas 
+                                  WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' 
+                                  GROUP BY id_siswa
+                                ) AS sk ON siswa.id_siswa = sk.id_siswa
+                                LEFT JOIN kelas ON sk.id_kelas = kelas.id_kelas
+                                WHERE siswa.aktif='1' 
+                                GROUP BY siswa.id_siswa
+                                ORDER BY siswa.id_siswa ASC");
                             while($rsiswa = mysqli_fetch_array($siswa)) {
                             ?>
-                            <tr>
-                                <td><?php echo $nomor++ ?></td>
-                                <td><?php echo $rsiswa['nama_siswa'] ?></td>
-                                <td><?php echo $rsiswa['nis'] ?></td>
-                                <td><?php echo $rsiswa['nisn'] ?></td>
-                                <td><?php echo ($rsiswa['nama_kelas']) =="" ? "Belum Bergabung Di Anggota Kelas" : "$rsiswa[nama_kelas]" ?>
-                                </td>
-                                <td><?php echo $rsiswa['kompetensi_keahlian'] ?></td>
-                                <td><?php echo $rsiswa['terima_kelas'] ?></td>
-                                <td><?php echo $rsiswa['jenis_kelamin'] ?></td>
-                                <td><?php echo $rsiswa['agama'] ?></td>
-                                <td><?php echo $rsiswa['tempat_lahir'] ?>, <?php echo $rsiswa['tanggal_lahir'] ?></td>
-                                <td>
-                                    <?php echo "<!-- Debug: ID Siswa = " . $rsiswa['id_siswa'] . " -->"; ?>
-                                    <a href="?pages=kesiswaan&filter=edit&dataID=<?php echo $rsiswa['id_siswa'] ?>"
-                                        class="btn btn-warning " data-toggle="tooltip" title="Edit">
-                                        <i class="fa fa-pencil-alt"></i>
-                                    </a>
-                                    <a href="../assets/download/identitas-siswa.php?dataID=<?php echo $rsiswa['id_siswa'] ?>"
-                                        target="_blank" class="btn btn-success " data-toggle="tooltip" title="Print">
-                                        <i class="fa fa-print"></i>
-                                    </a>
-                                    <a href="?pages=kesiswaan&filter=hapus&dataID=<?php echo $rsiswa['id_siswa'] ?>"
-                                        onclick="return confirm('Yakin ?')" class="btn btn-danger "
-                                        data-toggle="tooltip" title="Hapus">
-                                        <i class="fa fa-trash"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            <?php } ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div><!-- /.row -->
-    </div>
+                <tr>
+                  <td><input type="checkbox" name="selected_ids[]" value="<?php echo $rsiswa['id_siswa'] ?>"
+                      class="checkbox"></td>
+                  <td><?php echo $nomor++ ?></td>
+                  <td><?php echo $rsiswa['nama_siswa'] ?></td>
+                  <td><?php echo $rsiswa['nis'] ?></td>
+                  <td><?php echo $rsiswa['nisn'] ?></td>
+                  <td>
+                    <?php echo ($rsiswa['nama_kelas']) =="" ? "Belum Bergabung Di Anggota Kelas" : "$rsiswa[nama_kelas]" ?>
+                  </td>
+                  <td><?php echo $rsiswa['kompetensi_keahlian'] ?></td>
+                  <td><?php echo $rsiswa['terima_kelas'] ?></td>
+                  <td><?php echo $rsiswa['jenis_kelamin'] ?></td>
+                  <td><?php echo $rsiswa['agama'] ?></td>
+                  <td><?php echo $rsiswa['tempat_lahir'] ?>, <?php echo $rsiswa['tanggal_lahir'] ?></td>
+                  <td>
+                    <?php echo "<!-- Debug: ID Siswa = " . $rsiswa['id_siswa'] . " -->"; ?>
+                    <a href="?pages=kesiswaan&filter=edit&dataID=<?php echo $rsiswa['id_siswa'] ?>"
+                      class="btn btn-warning " data-toggle="tooltip" title="Edit">
+                      <i class="fa fa-pencil-alt"></i>
+                    </a>
+                    <a href="../assets/download/identitas-siswa.php?dataID=<?php echo $rsiswa['id_siswa'] ?>"
+                      target="_blank" class="btn btn-success " data-toggle="tooltip" title="Print">
+                      <i class="fa fa-print"></i>
+                    </a>
+                    <a href="?pages=kesiswaan&filter=hapus&dataID=<?php echo $rsiswa['id_siswa'] ?>"
+                      onclick="return confirm('Yakin ?')" class="btn btn-danger " data-toggle="tooltip" title="Hapus">
+                      <i class="fa fa-trash"></i>
+                    </a>
+                  </td>
+                </tr>
+                <?php } ?>
+              </tbody>
+            </table>
+          </div>
+        </form>
+      </div>
+    </div><!-- /.row -->
+  </div>
 </section><!-- /.content -->
 
+<script>
+// Fungsi untuk konfirmasi hapus terpilih
+function confirmDeleteSelected() {
+  Swal.fire({
+    title: 'Apakah anda yakin?',
+    text: "Data yang dipilih akan dihapus secara permanen!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Ya, hapus!',
+    cancelButtonText: 'Batal'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      document.getElementById('deleteForm').submit();
+    }
+  });
+}
+
+$(document).ready(function() {
+  // Initialize DataTable
+  var table = $('#datatable').DataTable();
+
+  // Check/Uncheck all checkboxes
+  $("#checkAll").on('click', function() {
+    var rows = table.rows().nodes();
+    $('input[type="checkbox"]', rows).prop('checked', this.checked);
+    toggleDeleteButton();
+  });
+
+  // Toggle individual checkbox
+  $(document).on('change', '.checkbox', function() {
+    if (!this.checked) {
+      $("#checkAll").prop('checked', false);
+    } else {
+      var allChecked = true;
+      $(".checkbox").each(function() {
+        if (!this.checked) {
+          allChecked = false;
+          return false;
+        }
+      });
+      $("#checkAll").prop('checked', allChecked);
+    }
+    toggleDeleteButton();
+  });
+
+  // Toggle delete button visibility
+  function toggleDeleteButton() {
+    if ($(".checkbox:checked").length > 0) {
+      $("#deleteSelected").show();
+    } else {
+      $("#deleteSelected").hide();
+    }
+  }
+  
+  // Initialize button visibility
+  toggleDeleteButton();
+});
+
+// Handle delete selected button click
+$(document).on('click', '#deleteSelected', function() {
+  confirmDeleteSelected();
+});
+</script>
 
 
-<?php }elseif($_GET['filter']=="tambah"){ ?>
+
+<?php 
+// Tambahkan penanganan untuk hapus masal
+if (isset($_POST['selected_ids']) && is_array($_POST['selected_ids']) && count($_POST['selected_ids']) > 0) {
+    $selected_ids = $_POST['selected_ids'];
+    $id_list = implode(',', array_map('intval', $selected_ids)); // Sanitasi ID
+    
+    // Lakukan update status untuk siswa_kelas dan siswa
+    $hapus_kelas = mysqli_query($mysqli, "UPDATE siswa_kelas SET status='2' WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_siswa IN ($id_list)");
+    $hapus_siswa = mysqli_query($mysqli, "UPDATE siswa SET aktif='0' WHERE id_siswa IN ($id_list)");
+    
+    if ($hapus_kelas && $hapus_siswa) {
+        echo "<script>
+            Swal.fire({
+                title: 'Berhasil!',
+                text: 'Data siswa berhasil dihapus',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then(function() {
+                window.location.href = '?pages=kesiswaan';
+            });
+        </script>";
+    } else {
+        echo "Error: " . mysqli_error($mysqli);
+    }
+}
+?><?php }elseif($_GET['filter']=="tambah"){ ?>
 <section class="content-header">
-    <h1>
-        Form Tambah Siswa sekolah
-    </h1>
-    <a href="?pages=<?php echo $_GET['pages']?>" class="btn btn-primary ">Kembali</a>
+  <h1>
+    Form Tambah Siswa sekolah
+  </h1>
+  <a href="?pages=<?php echo $_GET['pages']?>" class="btn btn-primary ">Kembali</a>
 </section>
 
 <!-- Main content -->
 <section class="content">
-    <div class="row">
-        <div class="col-md-12">
-            <!-- USERS LIST -->
-            <form method="POST">
-                <div class="card border-danger">
-                    <div class="card-header text-white">
-                        <h3 class="card-title">Tambah Siswa</h3>
-                        <div class="float-right">
-                            <!-- Optional tools/buttons can be added here -->
-                            <button type="submit" name="simpandata" class="btn btn-success ">Simpan
-                                Data</button>
-                        </div>
-                    </div><!-- /.card-header -->
-                    <div class="card-body">
-                        <input type="hidden" name="kode" value="<?php echo $kode ?>">
+  <div class="row">
+    <div class="col-md-12">
+      <!-- USERS LIST -->
+      <form method="POST">
+        <div class="card border-danger">
+          <div class="card-header text-white">
+            <h3 class="card-title">Tambah Siswa</h3>
+            <div class="float-right">
+              <!-- Optional tools/buttons can be added here -->
+              <button type="submit" name="simpandata" class="btn btn-success ">Simpan
+                Data</button>
+            </div>
+          </div><!-- /.card-header -->
+          <div class="card-body">
+            <input type="hidden" name="kode" value="<?php echo $kode ?>">
 
-                        <div class="row">
-                            <div class="col-md-4">
-                                <h4>Biodata</h4>
+            <div class="row">
+              <div class="col-md-4">
+                <h4>Biodata</h4>
 
-                                <table class="table table-striped table-bordered">
-                                    <tr>
-                                        <td colspan="2" class="table-info"> <b>
-                                                <h4>Data Siswa</h4>
-                                            </b></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Nama Siswa</td>
-                                        <td><input type="text" name="nama_siswa" class="form-control " required=""
-                                                autocomplete="off" autofocus=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">NIK Siswa</td>
-                                        <td><input type="text" name="nik_pd" class="form-control " required=""
-                                                autocomplete="off" autofocus="">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">No KK</td>
-                                        <td><input type="text" name="nkk" class="form-control " required=""
-                                                autocomplete="off" autofocus="">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">NISN</td>
-                                        <td><input type="number" name="nisn" class="form-control " required=""
-                                                autocomplete="off" autofocus="">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">NIS</td>
-                                        <td><input type="text" name="nis" class="form-control " required=""
-                                                autocomplete="off" autofocus="">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Tempat Lahir</td>
-                                        <td><input type="text" name="tempat_lahir" class="form-control " required=""
-                                                autocomplete="off" autofocus=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Tanggal Lahir</td>
-                                        <td><input type="date" name="tanggal_lahir" class="form-control " required=""
-                                                autocomplete="off" autofocus=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Jenis Kelamin</td>
-                                        <td>
-                                            <select name="kelamin" class="form-control " required="">
-                                                <option value="">Pilih Jenis Kelamin</option>
-                                                <option value="1">
-                                                    Laki-laki</option>
-                                                <option value="2">
-                                                    Perempuan</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Agama</td>
-                                        <td>
-                                            <select name="agama" class="form-control " required="">
-                                                <option value="">Pilih Agama</option>
-                                                <option value="1">
-                                                    Islam</option>
-                                                <option value="2">
-                                                    Katholik</option>
-                                                <option value="3">
-                                                    Kristen</option>
-                                                <option value="4">
-                                                    Hindu</option>
-                                                <option value="5">
-                                                    Budha</option>
-                                                <option value="6">
-                                                    Kong Hu Chu</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">No. Telepon</td>
-                                        <td><input type="number" name="kontak_siswa" class="form-control " required=""
-                                                autocomplete="off" autofocus=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Hubungan Dalam Keluarga</td>
-                                        <td>
-                                            <select name="hub_keluarga" class="form-control " required="">
-                                                <option value="">Pilih Jenis Hubungan</option>
-                                                <option value="1">Anak
-                                                    Kandung</option>
-                                                <option value="2">Anak Tiri
-                                                </option>
-                                                <option value="3">Anak
-                                                    Angkat</option>
-                                                <option value="4">Anak Piara
-                                                </option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Jumlah Saudara</td>
-                                        <td><input type="number" name="jumlah_saudara" class="form-control " required=""
-                                                autocomplete="off" autofocus=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Anak Ke</td>
-                                        <td><input type="number" name="anak_ke" class="form-control " required=""
-                                                autocomplete="off" autofocus="">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Sekolah Asal</td>
-                                        <td><input type="text" name="sekolah_asal" class="form-control " required=""
-                                                autocomplete="off" autofocus=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Diterima Pada Tanggal</td>
-                                        <td><input type="date" name="terima_tanggal" class="form-control " required=""
-                                                autocomplete="off" autofocus=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Diterima Pada Tingkat</td>
-                                        <td>
-                                            <select name="terima_tingkat" class="form-control " required="">
-                                                <option value="">Pilih Kelas Saat Diterima Masuk</option>
-                                                <?php
+                <table class="table table-striped table-bordered">
+                  <tr>
+                    <td colspan="2" class="table-info"> <b>
+                        <h4>Data Siswa</h4>
+                      </b></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Nama Siswa</td>
+                    <td><input type="text" name="nama_siswa" class="form-control " required="" autocomplete="off"
+                        autofocus=""></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">NIK Siswa</td>
+                    <td><input type="text" name="nik_pd" class="form-control " required="" autocomplete="off"
+                        autofocus="">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">No KK</td>
+                    <td><input type="text" name="nkk" class="form-control " required="" autocomplete="off" autofocus="">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">NISN</td>
+                    <td><input type="number" name="nisn" class="form-control " required="" autocomplete="off"
+                        autofocus="">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">NIS</td>
+                    <td><input type="text" name="nis" class="form-control " required="" autocomplete="off" autofocus="">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Tempat Lahir</td>
+                    <td><input type="text" name="tempat_lahir" class="form-control " required="" autocomplete="off"
+                        autofocus=""></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Tanggal Lahir</td>
+                    <td><input type="date" name="tanggal_lahir" class="form-control " required="" autocomplete="off"
+                        autofocus=""></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Jenis Kelamin</td>
+                    <td>
+                      <select name="kelamin" class="form-control " required="">
+                        <option value="">Pilih Jenis Kelamin</option>
+                        <option value="1">
+                          Laki-laki</option>
+                        <option value="2">
+                          Perempuan</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Agama</td>
+                    <td>
+                      <select name="agama" class="form-control " required="">
+                        <option value="">Pilih Agama</option>
+                        <option value="1">
+                          Islam</option>
+                        <option value="2">
+                          Katholik</option>
+                        <option value="3">
+                          Kristen</option>
+                        <option value="4">
+                          Hindu</option>
+                        <option value="5">
+                          Budha</option>
+                        <option value="6">
+                          Kong Hu Chu</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">No. Telepon</td>
+                    <td><input type="number" name="kontak_siswa" class="form-control " required="" autocomplete="off"
+                        autofocus=""></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Hubungan Dalam Keluarga</td>
+                    <td>
+                      <select name="hub_keluarga" class="form-control " required="">
+                        <option value="">Pilih Jenis Hubungan</option>
+                        <option value="1">Anak
+                          Kandung</option>
+                        <option value="2">Anak Tiri
+                        </option>
+                        <option value="3">Anak
+                          Angkat</option>
+                        <option value="4">Anak Piara
+                        </option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Jumlah Saudara</td>
+                    <td><input type="number" name="jumlah_saudara" class="form-control " required="" autocomplete="off"
+                        autofocus=""></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Anak Ke</td>
+                    <td><input type="number" name="anak_ke" class="form-control " required="" autocomplete="off"
+                        autofocus="">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Sekolah Asal</td>
+                    <td><input type="text" name="sekolah_asal" class="form-control " required="" autocomplete="off"
+                        autofocus=""></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Diterima Pada Tanggal</td>
+                    <td><input type="date" name="terima_tanggal" class="form-control " required="" autocomplete="off"
+                        autofocus=""></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Diterima Pada Tingkat</td>
+                    <td>
+                      <select name="terima_tingkat" class="form-control " required="">
+                        <option value="">Pilih Kelas Saat Diterima Masuk</option>
+                        <?php
                                                 $kelas = mysqli_query($mysqli, "SELECT * FROM tingkat ORDER BY id_tingkat ASC");
                                                 while ($rkelas = mysqli_fetch_array($kelas)) { ?>
-                                                <option value="<?php echo $rkelas['id_tingkat'] ?>">
-                                                    <?php echo $rkelas['tingkat'] ?></option>
-                                                <?php } ?>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Jurusan</td>
-                                        <td><select name="jurusan" class="form-control " required="">
-                                                <option value="">Pilih Jurusan</option>
-                                                <?php
+                        <option value="<?php echo $rkelas['id_tingkat'] ?>">
+                          <?php echo $rkelas['tingkat'] ?></option>
+                        <?php } ?>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Jurusan</td>
+                    <td><select name="jurusan" class="form-control " required="">
+                        <option value="">Pilih Jurusan</option>
+                        <?php
                                             // Hanya mengambil data dari tabel kompetensi_keahlian.
                                             $jurusan = mysqli_query($mysqli, "SELECT * FROM kompetensi_keahlian ORDER BY kompetensi_keahlian ASC");
 
                                             while ($rjurusan = mysqli_fetch_array($jurusan)) {
                                             ?>
-                                                <option value="<?php echo $rjurusan['id_kompetensi_keahlian'] ?>">
-                                                    <?php echo $rjurusan['kompetensi_keahlian']; ?>
-                                                </option>
-                                                <?php } ?>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Terima Kelas</td>
-                                        <td><input type="text" name="terima_kelas" class="form-control " required=""
-                                                autocomplete="off" autofocus="">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Alamat</td>
-                                        <td><input type="text" name="alamat" class="form-control " required=""
-                                                autocomplete="off" autofocus="">
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="col-md-4">
-                                <h4>Data Orang Tua</h4>
-                                <table class="table table-striped table-bordered">
-                                    <tr>
-                                        <td colspan="2" class="table-info"> <b>
-                                                <h4>Data Ayah</h4>
-                                            </b></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Nama Ayah</td>
-                                        <td><input type="text" name="nama_ayah" class="form-control " required=""
-                                                autocomplete="off" autofocus=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Nik Ayah</td>
-                                        <td><input type="text" name="nik_ayah" class="form-control " required=""
-                                                autocomplete="off" autofocus=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Tahun Lahir Ayah</td>
-                                        <td><input type="text" name="tahun_ayah" class="form-control " required=""
-                                                autocomplete="off" autofocus=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Pendidikan Ayah</td>
-                                        <td><input type="text" name="pendidikan_ayah" class="form-control " required=""
-                                                autocomplete="off" autofocus=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">No. Telepon Ayah</td>
-                                        <td><input type="text" name="kontak_ayah" class="form-control " required=""
-                                                autocomplete="off" autofocus=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Pekerjaan Ayah</td>
-                                        <td><input type="text" name="pekerjaan_ayah" class="form-control " required=""
-                                                autocomplete="off" autofocus=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2" class="table-info"> <b>
-                                                <h4>Data Ibu</h4>
-                                            </b></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Nama Ibu</td>
-                                        <td><input type="text" name="nama_ibu" class="form-control " required=""
-                                                autocomplete="off" autofocus=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Nik Ibu</td>
-                                        <td><input type="text" name="nik_ibu" class="form-control " required=""
-                                                autocomplete="off" autofocus="">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Tahun Lahir Ibu</td>
-                                        <td><input type="text" name="tahun_ibu" class="form-control " required=""
-                                                autocomplete="off" autofocus=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Pendidikan Ibu</td>
-                                        <td><input type="text" name="pendidikan_ibu" class="form-control " required=""
-                                                autocomplete="off" autofocus=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">No. Telepon Ayah</td>
-                                        <td><input type="text" name="kontak_ibu" class="form-control " required=""
-                                                autocomplete="off" autofocus=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Pekerjaan Ibu</td>
-                                        <td><input type="text" name="pekerjaan_ibu" class="form-control " required=""
-                                                autocomplete="off" autofocus=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Alamat Orang Tua</td>
-                                        <td><input type="text" name="alamat_orang_tua" class="form-control " required=""
-                                                autocomplete="off" autofocus=""></td>
-                                    </tr>
+                        <option value="<?php echo $rjurusan['id_kompetensi_keahlian'] ?>">
+                          <?php echo $rjurusan['kompetensi_keahlian']; ?>
+                        </option>
+                        <?php } ?>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Terima Kelas</td>
+                    <td><input type="text" name="terima_kelas" class="form-control " required="" autocomplete="off"
+                        autofocus="">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Alamat</td>
+                    <td><input type="text" name="alamat" class="form-control " required="" autocomplete="off"
+                        autofocus="">
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div class="col-md-4">
+                <h4>Data Orang Tua</h4>
+                <table class="table table-striped table-bordered">
+                  <tr>
+                    <td colspan="2" class="table-info"> <b>
+                        <h4>Data Ayah</h4>
+                      </b></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Nama Ayah</td>
+                    <td><input type="text" name="nama_ayah" class="form-control " required="" autocomplete="off"
+                        autofocus=""></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Nik Ayah</td>
+                    <td><input type="text" name="nik_ayah" class="form-control " required="" autocomplete="off"
+                        autofocus=""></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Tahun Lahir Ayah</td>
+                    <td><input type="text" name="tahun_ayah" class="form-control " required="" autocomplete="off"
+                        autofocus=""></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Pendidikan Ayah</td>
+                    <td><input type="text" name="pendidikan_ayah" class="form-control " required="" autocomplete="off"
+                        autofocus=""></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">No. Telepon Ayah</td>
+                    <td><input type="text" name="kontak_ayah" class="form-control " required="" autocomplete="off"
+                        autofocus=""></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Pekerjaan Ayah</td>
+                    <td><input type="text" name="pekerjaan_ayah" class="form-control " required="" autocomplete="off"
+                        autofocus=""></td>
+                  </tr>
+                  <tr>
+                    <td colspan="2" class="table-info"> <b>
+                        <h4>Data Ibu</h4>
+                      </b></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Nama Ibu</td>
+                    <td><input type="text" name="nama_ibu" class="form-control " required="" autocomplete="off"
+                        autofocus=""></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Nik Ibu</td>
+                    <td><input type="text" name="nik_ibu" class="form-control " required="" autocomplete="off"
+                        autofocus="">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Tahun Lahir Ibu</td>
+                    <td><input type="text" name="tahun_ibu" class="form-control " required="" autocomplete="off"
+                        autofocus=""></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Pendidikan Ibu</td>
+                    <td><input type="text" name="pendidikan_ibu" class="form-control " required="" autocomplete="off"
+                        autofocus=""></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">No. Telepon Ayah</td>
+                    <td><input type="text" name="kontak_ibu" class="form-control " required="" autocomplete="off"
+                        autofocus=""></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Pekerjaan Ibu</td>
+                    <td><input type="text" name="pekerjaan_ibu" class="form-control " required="" autocomplete="off"
+                        autofocus=""></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Alamat Orang Tua</td>
+                    <td><input type="text" name="alamat_orang_tua" class="form-control " required="" autocomplete="off"
+                        autofocus=""></td>
+                  </tr>
 
-                                </table>
-                            </div>
-                            <div class="col-md-4">
-                                <h4>Data Wali</h4>
-                                <table class="table table-striped table-bordered">
-                                    <tr>
-                                        <td colspan="2" class="table-info"> <b>
-                                                <h4>Data Wali</h4>
-                                            </b></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Nama Wali</td>
-                                        <td><input type="text" name="nama_wali" class="form-control " required=""
-                                                autocomplete="off" autofocus=""
-                                                value="<?php echo $siswa['nama_wali'] ?>"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Pekerjaan Wali</td>
-                                        <td><input type="text" name="pekerjaan_wali" class="form-control " required=""
-                                                autocomplete="off" autofocus=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">No. Telepon Wali</td>
-                                        <td><input type="text" name="kontak_wali" class="form-control " required=""
-                                                autocomplete="off" autofocus=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Alamat Wali</td>
-                                        <td><input type="text" name="alamat_wali" class="form-control " required=""
-                                                autocomplete="off" autofocus=""></td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div><!-- /.row -->
+                </table>
+              </div>
+              <div class="col-md-4">
+                <h4>Data Wali</h4>
+                <table class="table table-striped table-bordered">
+                  <tr>
+                    <td colspan="2" class="table-info"> <b>
+                        <h4>Data Wali</h4>
+                      </b></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Nama Wali</td>
+                    <td><input type="text" name="nama_wali" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['nama_wali'] ?>"></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Pekerjaan Wali</td>
+                    <td><input type="text" name="pekerjaan_wali" class="form-control " required="" autocomplete="off"
+                        autofocus=""></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">No. Telepon Wali</td>
+                    <td><input type="text" name="kontak_wali" class="form-control " required="" autocomplete="off"
+                        autofocus=""></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Alamat Wali</td>
+                    <td><input type="text" name="alamat_wali" class="form-control " required="" autocomplete="off"
+                        autofocus=""></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div><!-- /.row -->
 </section><!-- /.content -->
 
 
@@ -555,188 +655,177 @@ if (isset($_POST['simpandata'])) {
 
     	?>
 <section class="content-header">
-    <h1>
-        Form Edit Siswa
-    </h1>
+  <h1>
+    Form Edit Siswa
+  </h1>
 </section>
 
 <section class="content-header">
-    <a href="?pages=<?php echo $_GET['pages']?>" class="btn btn-primary ">Kembali</a>
+  <a href="?pages=<?php echo $_GET['pages']?>" class="btn btn-primary ">Kembali</a>
 </section>
 
 <!-- Main content -->
 <section class="content">
-    <div class="row">
-        <div class="col-md-12">
-            <!-- USERS LIST -->
-            <form method="POST">
-                <div class="card border-danger">
-                    <div class="card-header text-white">
-                        <h3 class="card-title"><?php echo $siswa['nama_siswa'] ?></h3>
-                        <div class="float-right">
-                            <!-- Optional tools/buttons can be added here -->
-                            <button type="submit" name="editdata" class="btn btn-success ">Simpan
-                                Data</button>
-                        </div>
-                    </div><!-- /.card-header -->
-                    <div class="card-body">
-                        <input type="hidden" name="kode" value="<?php echo $kode ?>">
+  <div class="row">
+    <div class="col-md-12">
+      <!-- USERS LIST -->
+      <form method="POST">
+        <div class="card border-danger">
+          <div class="card-header text-white">
+            <h3 class="card-title"><?php echo $siswa['nama_siswa'] ?></h3>
+            <div class="float-right">
+              <!-- Optional tools/buttons can be added here -->
+              <button type="submit" name="editdata" class="btn btn-success ">Simpan
+                Data</button>
+            </div>
+          </div><!-- /.card-header -->
+          <div class="card-body">
+            <input type="hidden" name="kode" value="<?php echo $kode ?>">
 
-                        <div class="row">
-                            <div class="col-md-4">
-                                <h4>Biodata</h4>
+            <div class="row">
+              <div class="col-md-4">
+                <h4>Biodata</h4>
 
-                                <table class="table table-striped table-bordered">
-                                    <tr>
-                                        <td colspan="2" class="table-info"> <b>
-                                                <h4>Data Siswa</h4>
-                                            </b></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Nama Siswa</td>
-                                        <td><input type="text" name="nama_siswa" class="form-control " required=""
-                                                autocomplete="off" autofocus=""
-                                                value="<?php echo $siswa['nama_siswa'] ?>"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">NIK Siswa</td>
-                                        <td><input type="text" name="nik_pd" class="form-control " required=""
-                                                autocomplete="off" autofocus="" value="<?php echo $siswa['nik_pd'] ?>">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">No KK</td>
-                                        <td><input type="text" name="nkk" class="form-control " required=""
-                                                autocomplete="off" autofocus="" value="<?php echo $siswa['nkk'] ?>">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">NISN</td>
-                                        <td><input type="number" name="nisn" class="form-control " required=""
-                                                autocomplete="off" autofocus="" value="<?php echo $siswa['nisn'] ?>">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">NIS</td>
-                                        <td><input type="text" name="nis" class="form-control " required=""
-                                                autocomplete="off" autofocus="" value="<?php echo $siswa['nis'] ?>">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Tempat Lahir</td>
-                                        <td><input type="text" name="tempat_lahir" class="form-control " required=""
-                                                autocomplete="off" autofocus=""
-                                                value="<?php echo $siswa['tempat_lahir'] ?>"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Tanggal Lahir</td>
-                                        <td><input type="date" name="tanggal_lahir" class="form-control " required=""
-                                                autocomplete="off" autofocus=""
-                                                value="<?php echo $siswa['tanggal_lahir'] ?>"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Jenis Kelamin</td>
-                                        <td>
-                                            <select name="kelamin" class="form-control " required="">
-                                                <option value="">Pilih Jenis Kelamin</option>
-                                                <option value="1" <?php if($siswa['kelamin']==1){ echo "selected";} ?>>
-                                                    Laki-laki</option>
-                                                <option value="2" <?php if($siswa['kelamin']==2){ echo "selected";} ?>>
-                                                    Perempuan</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Agama</td>
-                                        <td>
-                                            <select name="agama" class="form-control " required="">
-                                                <option value="">Pilih Agama</option>
-                                                <option value="1" <?php if($siswa['agama']==1){ echo "selected";} ?>>
-                                                    Islam</option>
-                                                <option value="2" <?php if($siswa['agama']==2){ echo "selected";} ?>>
-                                                    Katholik</option>
-                                                <option value="3" <?php if($siswa['agama']==3){ echo "selected";} ?>>
-                                                    Kristen</option>
-                                                <option value="4" <?php if($siswa['agama']==4){ echo "selected";} ?>>
-                                                    Hindu</option>
-                                                <option value="5" <?php if($siswa['agama']==5){ echo "selected";} ?>>
-                                                    Budha</option>
-                                                <option value="6" <?php if($siswa['agama']==6){ echo "selected";} ?>>
-                                                    Kong Hu Chu</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">No. Telepon</td>
-                                        <td><input type="number" name="kontak_siswa" class="form-control " required=""
-                                                autocomplete="off" autofocus=""
-                                                value="<?php echo $siswa['kontak_siswa'] ?>"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Hubungan Dalam Keluarga</td>
-                                        <td>
-                                            <select name="hub_keluarga" class="form-control " required="">
-                                                <option value="">Pilih Jenis Hubungan</option>
-                                                <option value="1"
-                                                    <?php if($siswa['hub_keluarga']==1){ echo "selected";} ?>>Anak
-                                                    Kandung</option>
-                                                <option value="2"
-                                                    <?php if($siswa['hub_keluarga']==2){ echo "selected";} ?>>Anak Tiri
-                                                </option>
-                                                <option value="3"
-                                                    <?php if($siswa['hub_keluarga']==3){ echo "selected";} ?>>Anak
-                                                    Angkat</option>
-                                                <option value="4"
-                                                    <?php if($siswa['hub_keluarga']==4){ echo "selected";} ?>>Anak Piara
-                                                </option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Jumlah Saudara</td>
-                                        <td><input type="number" name="jumlah_saudara" class="form-control " required=""
-                                                autocomplete="off" autofocus=""
-                                                value="<?php echo $siswa['jumlah_saudara'] ?>"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Anak Ke</td>
-                                        <td><input type="number" name="anak_ke" class="form-control " required=""
-                                                autocomplete="off" autofocus="" value="<?php echo $siswa['anak_ke'] ?>">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Sekolah Asal</td>
-                                        <td><input type="text" name="sekolah_asal" class="form-control " required=""
-                                                autocomplete="off" autofocus=""
-                                                value="<?php echo $siswa['sekolah_asal'] ?>"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Diterima Pada Tanggal</td>
-                                        <td><input type="date" name="terima_tanggal" class="form-control " required=""
-                                                autocomplete="off" autofocus=""
-                                                value="<?php echo $siswa['terima_tanggal'] ?>"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Diterima Pada Tingkat</td>
-                                        <td>
-                                            <select name="terima_tingkat" class="form-control " required="">
-                                                <option value="">Pilih Kelas Saat Diterima Masuk</option>
-                                                <?php
+                <table class="table table-striped table-bordered">
+                  <tr>
+                    <td colspan="2" class="table-info"> <b>
+                        <h4>Data Siswa</h4>
+                      </b></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Nama Siswa</td>
+                    <td><input type="text" name="nama_siswa" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['nama_siswa'] ?>"></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">NIK Siswa</td>
+                    <td><input type="text" name="nik_pd" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['nik_pd'] ?>">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">No KK</td>
+                    <td><input type="text" name="nkk" class="form-control " required="" autocomplete="off" autofocus=""
+                        value="<?php echo $siswa['nkk'] ?>">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">NISN</td>
+                    <td><input type="number" name="nisn" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['nisn'] ?>">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">NIS</td>
+                    <td><input type="text" name="nis" class="form-control " required="" autocomplete="off" autofocus=""
+                        value="<?php echo $siswa['nis'] ?>">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Tempat Lahir</td>
+                    <td><input type="text" name="tempat_lahir" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['tempat_lahir'] ?>"></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Tanggal Lahir</td>
+                    <td><input type="date" name="tanggal_lahir" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['tanggal_lahir'] ?>"></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Jenis Kelamin</td>
+                    <td>
+                      <select name="kelamin" class="form-control " required="">
+                        <option value="">Pilih Jenis Kelamin</option>
+                        <option value="1" <?php if($siswa['kelamin']==1){ echo "selected";} ?>>
+                          Laki-laki</option>
+                        <option value="2" <?php if($siswa['kelamin']==2){ echo "selected";} ?>>
+                          Perempuan</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Agama</td>
+                    <td>
+                      <select name="agama" class="form-control " required="">
+                        <option value="">Pilih Agama</option>
+                        <option value="1" <?php if($siswa['agama']==1){ echo "selected";} ?>>
+                          Islam</option>
+                        <option value="2" <?php if($siswa['agama']==2){ echo "selected";} ?>>
+                          Katholik</option>
+                        <option value="3" <?php if($siswa['agama']==3){ echo "selected";} ?>>
+                          Kristen</option>
+                        <option value="4" <?php if($siswa['agama']==4){ echo "selected";} ?>>
+                          Hindu</option>
+                        <option value="5" <?php if($siswa['agama']==5){ echo "selected";} ?>>
+                          Budha</option>
+                        <option value="6" <?php if($siswa['agama']==6){ echo "selected";} ?>>
+                          Kong Hu Chu</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">No. Telepon</td>
+                    <td><input type="number" name="kontak_siswa" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['kontak_siswa'] ?>"></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Hubungan Dalam Keluarga</td>
+                    <td>
+                      <select name="hub_keluarga" class="form-control " required="">
+                        <option value="">Pilih Jenis Hubungan</option>
+                        <option value="1" <?php if($siswa['hub_keluarga']==1){ echo "selected";} ?>>Anak
+                          Kandung</option>
+                        <option value="2" <?php if($siswa['hub_keluarga']==2){ echo "selected";} ?>>Anak Tiri
+                        </option>
+                        <option value="3" <?php if($siswa['hub_keluarga']==3){ echo "selected";} ?>>Anak
+                          Angkat</option>
+                        <option value="4" <?php if($siswa['hub_keluarga']==4){ echo "selected";} ?>>Anak Piara
+                        </option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Jumlah Saudara</td>
+                    <td><input type="number" name="jumlah_saudara" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['jumlah_saudara'] ?>"></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Anak Ke</td>
+                    <td><input type="number" name="anak_ke" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['anak_ke'] ?>">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Sekolah Asal</td>
+                    <td><input type="text" name="sekolah_asal" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['sekolah_asal'] ?>"></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Diterima Pada Tanggal</td>
+                    <td><input type="date" name="terima_tanggal" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['terima_tanggal'] ?>"></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Diterima Pada Tingkat</td>
+                    <td>
+                      <select name="terima_tingkat" class="form-control " required="">
+                        <option value="">Pilih Kelas Saat Diterima Masuk</option>
+                        <?php
                                                 $kelas = mysqli_query($mysqli, "SELECT * FROM tingkat ORDER BY id_tingkat ASC");
                                                 while ($rkelas = mysqli_fetch_array($kelas)) {
                                                     $selkelas = $siswa['terima_tingkat'] == $rkelas['id_tingkat'] ? "selected" : "";
                                                 ?>
-                                                <option value="<?php echo $rkelas['id_tingkat'] ?>"
-                                                    <?php echo $selkelas ?>><?php echo $rkelas['tingkat'] ?></option>
-                                                <?php } ?>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Jurusan</td>
-                                        <td><select name="jurusan" class="form-control " required="">
-                                                <option value="">Pilih Jurusan</option>
-                                                <?php
+                        <option value="<?php echo $rkelas['id_tingkat'] ?>" <?php echo $selkelas ?>>
+                          <?php echo $rkelas['tingkat'] ?></option>
+                        <?php } ?>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Jurusan</td>
+                    <td><select name="jurusan" class="form-control " required="">
+                        <option value="">Pilih Jurusan</option>
+                        <?php
                                             // Hanya mengambil data dari tabel kompetensi_keahlian.
                                             $jurusan = mysqli_query($mysqli, "SELECT * FROM kompetensi_keahlian ORDER BY kompetensi_keahlian ASC");
 
@@ -744,162 +833,144 @@ if (isset($_POST['simpandata'])) {
                                                 // Cek apakah jurusan siswa cocok dengan jurusan yang diambil dari kompetensi_keahlian
                                                 $seljurusan = $siswa['jurusan'] == $rjurusan['id_kompetensi_keahlian'] ? "selected" : "";
                                             ?>
-                                                <option value="<?php echo $rjurusan['id_kompetensi_keahlian'] ?>"
-                                                    <?php echo $seljurusan; ?>>
-                                                    <?php echo $rjurusan['kompetensi_keahlian']; ?>
-                                                </option>
-                                                <?php } ?>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Terima Kelas</td>
-                                        <td><input type="text" name="terima_kelas" class="form-control " required=""
-                                                autocomplete="off" autofocus=""
-                                                value="<?php echo $siswa['terima_kelas'] ?>">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Alamat</td>
-                                        <td><input type="text" name="alamat" class="form-control " required=""
-                                                autocomplete="off" autofocus="" value="<?php echo $siswa['alamat'] ?>">
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="col-md-4">
-                                <h4>Data Orang Tua</h4>
-                                <table class="table table-striped table-bordered">
-                                    <tr>
-                                        <td colspan="2" class="table-info"> <b>
-                                                <h4>Data Ayah</h4>
-                                            </b></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Nama Ayah</td>
-                                        <td><input type="text" name="nama_ayah" class="form-control " required=""
-                                                autocomplete="off" autofocus=""
-                                                value="<?php echo $siswa['nama_ayah'] ?>"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Nik Ayah</td>
-                                        <td><input type="text" name="nik_ayah" class="form-control " required=""
-                                                autocomplete="off" autofocus=""
-                                                value="<?php echo $siswa['nik_ayah'] ?>"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Tahun Lahir Ayah</td>
-                                        <td><input type="text" name="tahun_ayah" class="form-control " required=""
-                                                autocomplete="off" autofocus=""
-                                                value="<?php echo $siswa['tahun_ayah'] ?>"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Pendidikan Ayah</td>
-                                        <td><input type="text" name="pendidikan_ayah" class="form-control " required=""
-                                                autocomplete="off" autofocus=""
-                                                value="<?php echo $siswa['pendidikan_ayah'] ?>"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">No. Telepon Ayah</td>
-                                        <td><input type="text" name="kontak_ayah" class="form-control " required=""
-                                                autocomplete="off" autofocus=""
-                                                value="<?php echo $siswa['kontak_ayah'] ?>"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Pekerjaan Ayah</td>
-                                        <td><input type="text" name="pekerjaan_ayah" class="form-control " required=""
-                                                autocomplete="off" autofocus=""
-                                                value="<?php echo $siswa['pekerjaan_ayah'] ?>"></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2" class="table-info"> <b>
-                                                <h4>Data Ibu</h4>
-                                            </b></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Nama Ibu</td>
-                                        <td><input type="text" name="nama_ibu" class="form-control " required=""
-                                                autocomplete="off" autofocus=""
-                                                value="<?php echo $siswa['nama_ibu'] ?>"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Nik Ibu</td>
-                                        <td><input type="text" name="nik_ibu" class="form-control " required=""
-                                                autocomplete="off" autofocus="" value="<?php echo $siswa['nik_ibu'] ?>">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Tahun Lahir Ibu</td>
-                                        <td><input type="text" name="tahun_ibu" class="form-control " required=""
-                                                autocomplete="off" autofocus=""
-                                                value="<?php echo $siswa['tahun_ibu'] ?>"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Pendidikan Ibu</td>
-                                        <td><input type="text" name="pendidikan_ibu" class="form-control " required=""
-                                                autocomplete="off" autofocus=""
-                                                value="<?php echo $siswa['pendidikan_ibu'] ?>"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">No. Telepon Ayah</td>
-                                        <td><input type="text" name="kontak_ibu" class="form-control " required=""
-                                                autocomplete="off" autofocus=""
-                                                value="<?php echo $siswa['kontak_ibu'] ?>"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Pekerjaan Ibu</td>
-                                        <td><input type="text" name="pekerjaan_ibu" class="form-control " required=""
-                                                autocomplete="off" autofocus=""
-                                                value="<?php echo $siswa['pekerjaan_ibu'] ?>"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Alamat Orang Tua</td>
-                                        <td><input type="text" name="alamat_orang_tua" class="form-control " required=""
-                                                autocomplete="off" autofocus=""
-                                                value="<?php echo $siswa['alamat_orang_tua'] ?>"></td>
-                                    </tr>
+                        <option value="<?php echo $rjurusan['id_kompetensi_keahlian'] ?>" <?php echo $seljurusan; ?>>
+                          <?php echo $rjurusan['kompetensi_keahlian']; ?>
+                        </option>
+                        <?php } ?>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Terima Kelas</td>
+                    <td><input type="text" name="terima_kelas" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['terima_kelas'] ?>">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Alamat</td>
+                    <td><input type="text" name="alamat" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['alamat'] ?>">
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div class="col-md-4">
+                <h4>Data Orang Tua</h4>
+                <table class="table table-striped table-bordered">
+                  <tr>
+                    <td colspan="2" class="table-info"> <b>
+                        <h4>Data Ayah</h4>
+                      </b></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Nama Ayah</td>
+                    <td><input type="text" name="nama_ayah" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['nama_ayah'] ?>"></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Nik Ayah</td>
+                    <td><input type="text" name="nik_ayah" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['nik_ayah'] ?>"></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Tahun Lahir Ayah</td>
+                    <td><input type="text" name="tahun_ayah" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['tahun_ayah'] ?>"></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Pendidikan Ayah</td>
+                    <td><input type="text" name="pendidikan_ayah" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['pendidikan_ayah'] ?>"></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">No. Telepon Ayah</td>
+                    <td><input type="text" name="kontak_ayah" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['kontak_ayah'] ?>"></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Pekerjaan Ayah</td>
+                    <td><input type="text" name="pekerjaan_ayah" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['pekerjaan_ayah'] ?>"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="2" class="table-info"> <b>
+                        <h4>Data Ibu</h4>
+                      </b></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Nama Ibu</td>
+                    <td><input type="text" name="nama_ibu" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['nama_ibu'] ?>"></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Nik Ibu</td>
+                    <td><input type="text" name="nik_ibu" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['nik_ibu'] ?>">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Tahun Lahir Ibu</td>
+                    <td><input type="text" name="tahun_ibu" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['tahun_ibu'] ?>"></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Pendidikan Ibu</td>
+                    <td><input type="text" name="pendidikan_ibu" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['pendidikan_ibu'] ?>"></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">No. Telepon Ayah</td>
+                    <td><input type="text" name="kontak_ibu" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['kontak_ibu'] ?>"></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Pekerjaan Ibu</td>
+                    <td><input type="text" name="pekerjaan_ibu" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['pekerjaan_ibu'] ?>"></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Alamat Orang Tua</td>
+                    <td><input type="text" name="alamat_orang_tua" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['alamat_orang_tua'] ?>"></td>
+                  </tr>
 
-                                </table>
-                            </div>
-                            <div class="col-md-4">
-                                <h4>Data Wali</h4>
-                                <table class="table table-striped table-bordered">
-                                    <tr>
-                                        <td colspan="2" class="table-info"> <b>
-                                                <h4>Data Wali</h4>
-                                            </b></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Nama Wali</td>
-                                        <td><input type="text" name="nama_wali" class="form-control " required=""
-                                                autocomplete="off" autofocus=""
-                                                value="<?php echo $siswa['nama_wali'] ?>"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Pekerjaan Wali</td>
-                                        <td><input type="text" name="pekerjaan_wali" class="form-control " required=""
-                                                autocomplete="off" autofocus=""
-                                                value="<?php echo $siswa['pekerjaan_wali'] ?>"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">No. Telepon Wali</td>
-                                        <td><input type="text" name="kontak_wali" class="form-control " required=""
-                                                autocomplete="off" autofocus=""
-                                                value="<?php echo $siswa['kontak_wali'] ?>"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 30%;">Alamat Wali</td>
-                                        <td><input type="text" name="alamat_wali" class="form-control " required=""
-                                                autocomplete="off" autofocus=""
-                                                value="<?php echo $siswa['alamat_wali'] ?>"></td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div><!-- /.row -->
+                </table>
+              </div>
+              <div class="col-md-4">
+                <h4>Data Wali</h4>
+                <table class="table table-striped table-bordered">
+                  <tr>
+                    <td colspan="2" class="table-info"> <b>
+                        <h4>Data Wali</h4>
+                      </b></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Nama Wali</td>
+                    <td><input type="text" name="nama_wali" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['nama_wali'] ?>"></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Pekerjaan Wali</td>
+                    <td><input type="text" name="pekerjaan_wali" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['pekerjaan_wali'] ?>"></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">No. Telepon Wali</td>
+                    <td><input type="text" name="kontak_wali" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['kontak_wali'] ?>"></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 30%;">Alamat Wali</td>
+                    <td><input type="text" name="alamat_wali" class="form-control " required="" autocomplete="off"
+                        autofocus="" value="<?php echo $siswa['alamat_wali'] ?>"></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div><!-- /.row -->
 </section><!-- /.content -->
 
 
@@ -1004,13 +1075,13 @@ if (isset($_POST['simpandata'])) {
 ?>
 <script type="text/javascript">
 swal.fire({
-    title: "Berhasil!",
-    text: "Data berhasil disimpan",
-    icon: "success",
-    button: "OK",
+  title: "Berhasil!",
+  text: "Data berhasil disimpan",
+  icon: "success",
+  button: "OK",
 }).then(function() {
-    window.location.href =
-        "?pages=<?php echo $_GET['pages'] ?>&filter=<?=$_GET['filter']?>&dataID=<?=$_GET['dataID']?>";
+  window.location.href =
+    "?pages=<?php echo $_GET['pages'] ?>&filter=<?=$_GET['filter']?>&dataID=<?=$_GET['dataID']?>";
 });
 </script>
 <?php
@@ -1027,70 +1098,73 @@ swal.fire({
 
 <?php }elseif($_GET['filter']=="hapus"){ 
 
-    	$hapussiswa = mysqli_query($mysqli,"UPDATE siswa_kelas SET status='2' WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_siswa='$_GET[dataID]'");
+    	// Sanitasi input untuk mencegah SQL injection
+    	$id_siswa = intval($_GET['dataID']);
+    	$hapussiswa = mysqli_query($mysqli,"UPDATE siswa_kelas SET status='2' WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_siswa='$id_siswa'");
 
-    	$hapussiswa2 = mysqli_query($mysqli,"UPDATE siswa SET aktif='0' WHERE id_siswa='$_GET[dataID]'");
+    	$hapussiswa2 = mysqli_query($mysqli,"UPDATE siswa SET aktif='0' WHERE id_siswa='$id_siswa'");
 
-    	if ($hapussiswa || $hapussiswa2) {
+    	if ($hapussiswa && $hapussiswa2) {
         	?>
 <script type="text/javascript">
 swal.fire({
-    title: "Berhasil!",
-    text: "Data berhasil diproses",
-    icon: "success",
-    button: "OK",
+  title: "Berhasil!",
+  text: "Data berhasil diproses",
+  icon: "success",
+  button: "OK",
 }).then(function() {
-    window.location.href = "?pages=<?php echo $_GET['pages'] ?>";
+  window.location.href = "?pages=<?php echo $_GET['pages'] ?>";
 });
 </script>
 <?php
+        } else {
+            echo "Error: " . mysqli_error($mysqli);
         }
-
     	?>
 
 
 <?php }elseif($_GET['filter']=="upload"){ ?>
 <section class="content-header">
-    <h1>
-        Form Upload Kesiswaan Sekolah
-        <small><i>E-Rapor</i></small>
-    </h1>
+  <h1>
+    Form Upload Kesiswaan Sekolah
+    <small><i>E-Rapor</i></small>
+  </h1>
 </section>
 
 <!-- Main content -->
 <section class="content">
-    <div class="row">
-        <div class="col-md-12">
-            <!-- USERS LIST -->
-            <form method="POST" enctype="multipart/form-data">
-                <div class="card border-danger">
-                    <div class="card-header text-white">
-                        <h3 class="card-title">Form Upload Kesiswaan Sekolah</h3>
-                        <div class="float-right">
-                            <a href="?pages=kesiswaan" class="btn btn-primary ">Kembali</a>
-                            <button type="submit" name="uploaddata" class="btn btn-success ">Simpan Data</button>
-                        </div>
-                    </div><!-- /.card-header -->
-                    <div class="card-body">
-                        <table class="table table-striped table-bordered">
-                            <tr>
-                                <td style="width: 30%;">Pilih File Excel</td>
-                                <td><input type="file" name="file" class="form-control " required="" autocomplete="off"
-                                        autofocus=""></td>
-                            </tr>
-                            <tr>
-                                <td style="width: 30%;">Format Excel Data Siswa</td>
-                                <td>
-                                    <a href="../assets/format/format-upload-siswa.xlsx" class="btn btn-danger ">Download
-                                        Format</a>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </form>
-        </div><!-- /.row -->
-    </div>
+  <div class="row">
+    <div class="col-md-12">
+      <!-- USERS LIST -->
+      <form method="POST" enctype="multipart/form-data">
+        <div class="card border-danger">
+          <div class="card-header text-white">
+            <h3 class="card-title">Form Upload Kesiswaan Sekolah</h3>
+            <div class="float-right">
+              <a href="?pages=kesiswaan" class="btn btn-primary ">Kembali</a>
+              <button type="submit" name="uploaddata" class="btn btn-success ">Simpan Data</button>
+            </div>
+          </div><!-- /.card-header -->
+          <div class="card-body">
+            <table class="table table-striped table-bordered">
+              <tr>
+                <td style="width: 30%;">Pilih File Excel</td>
+                <td><input type="file" name="file" class="form-control " required="" autocomplete="off" autofocus="">
+                </td>
+              </tr>
+              <tr>
+                <td style="width: 30%;">Format Excel Data Siswa</td>
+                <td>
+                  <a href="../assets/format/format-upload-siswa.xlsx" class="btn btn-danger ">Download
+                    Format</a>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </form>
+    </div><!-- /.row -->
+  </div>
 </section><!-- /.content -->
 
 
@@ -1259,13 +1333,13 @@ let message = "Berhasil Mengupload <?php echo $jumlah_baris - 1 ?> Data";
 message += "\ndan Data yang gagal diinput:\n<?php echo implode('\n', $gagal); ?>";
 <?php } ?>
 swal.fire({
-    title: "Berhasil!",
-    text: message,
-    icon: "success",
-    width: '600px', // Increase sweet alert modal width
-    padding: '3em', // Add padding for a larger modal
+  title: "Berhasil!",
+  text: message,
+  icon: "success",
+  width: '600px', // Increase sweet alert modal width
+  padding: '3em', // Add padding for a larger modal
 }).then(function() {
-    window.location.href = "?pages=kesiswaan";
+  window.location.href = "?pages=kesiswaan";
 });
 </script>
 <?php

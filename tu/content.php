@@ -46,7 +46,8 @@
           'managemen-elemen' => 'managemen-elemen.php',
           'managemen-sub-elemen' => 'managemen-sub-elemen.php',
           'penilaian-profil-pancasila' => 'penilaian-profil-pancasila.php',
-          'p5bk' => 'p5bk.php'
+          'p5bk' => 'p5bk.php',
+          'naik-kelas' => 'naik-kelas.php'
       ];
 
       // Jika pages kosong atau tidak ada dalam valid_pages, tampilkan dashboard

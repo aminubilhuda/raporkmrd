@@ -29,6 +29,10 @@ $host = "localhost";
 $user = "root";
 $pass = "";
 $db = "abdinega_db_raporkm";
+// $host = "localhost";
+// $user = "abdinega_abdira";
+// $pass = "abdinega_abdira";
+// $db = "abdinega_db_raporkm";
 
 //Menggunakan objek mysqli untuk membuat koneksi dan menyimpanya dalam variabel $mysqli
 $mysqli = new mysqli($host, $user, $pass, $db);

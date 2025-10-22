@@ -67,6 +67,7 @@
             <li><a href="?pages=anggota-kelas">Anggota Kelas</a></li>
             <li><a href="?pages=mapel-kelas">Mapel Kelas</a></li>
             <li><a href="?pages=mapel-siswa">Mapel Pilihan Siswa</a></li>
+            <li><a href="?pages=naik-kelas">Naik Kelas/Tingkat</a></li>
           </ul>
         </li>
         <li>
