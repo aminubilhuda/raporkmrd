@@ -8,7 +8,10 @@ error_reporting(0);
 
 $user = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM users WHERE id_user='$_SESSION[id_user]'"));
 $sekolah = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM sekolah WHERE id_sekolah='1'"));
-$guru = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM users WHERE id_user='$_GET[dataID]'"));
+// Check if dataID is set in GET request
+$dataID = isset($_GET['dataID']) ? $_GET['dataID'] : '';
+$guru = !empty($dataID) ? mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM users WHERE id_user='$dataID'")) :
+null;
 $tahun = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM tahun_pelajaran WHERE id_tahun_pelajaran='$sekolah[tahun]'"));
 $semester = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM semester WHERE id_semester='$sekolah[semester]'"));
 $pembagian = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM pembagian_raport WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]'"));
@@ -183,9 +186,9 @@ h3 {
       <td style="width: 30%; text-align: left; padding: 3px; vertical-align: middle; " rowspan="2">
         <?php echo $rmapel['nama_mapel'] ?></td>
       <td style="width: 15%; text-align: center; vertical-align: middle; " rowspan="2">
-          
-          <!--nilai rapor kurang dari 80 merah-->
-         <?php
+
+        <!--nilai rapor kurang dari 80 merah-->
+        <?php
             if (round($nilai['nilai'], 0) == 0 || $nilai['nilai'] == "") {
                 echo "<span style='color: red;'>0</span>";
             } else if (round($nilai['nilai'], 0) < 75) {
@@ -194,11 +197,11 @@ h3 {
                 echo "<span style='color: black;'>" . round($nilai['nilai'], 0) . "</span>";
             }
         ?>
-        
+
         <?php
         // echo round($nilai['nilai'],0)
         ?>
-        
+
       </td>
       <td style="width: 50%; text-align: left; padding: 3px; vertical-align: middle; ">
         <?php  
@@ -434,27 +437,27 @@ h3 {
       </tr>
     </table>
   </div>
-  
-  <div style="page-break-inside: avoid;">
+
   <?php if($sekolah['semester']==2){ ?>
-  <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-    <tr>
-      <td style="width: 100%; text-align: left;"><b>KETERANGAN KENAIKAN KELAS</b></td>
-    </tr>
-  </table>
+  <div style="page-break-inside: avoid;">
+    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+      <tr>
+        <td style="width: 100%; text-align: left;"><b>KETERANGAN KENAIKAN KELAS</b></td>
+      </tr>
+    </table>
 
-  <!-- data Keterangan Naik Kelas -->
+    <!-- data Keterangan Naik Kelas -->
 
-  <table style="width: 100%; border-collapse: collapse; margin-top: 10px;" border="1">
-    <tr>
-      <td style="width: 100%; text-align: left; padding: 5px; height: 35px;">
-        Berdasarkan Hasil Penilaian Semester Ganjil dan Genap Tahun Pelajaran
-        <?php echo $tahun['tahun_pelajaran'] ?>, maka Peserta Didik <br> dinyatakan : <b>Naik Ke Tingkat
-          <?php echo $datatingkat['tingkat']?></b> / <b>Tinggal di Kelas
-          <?php echo $kelas['nama_kelas'] ?></b>
-      </td>
-    </tr>
-  </table>
+    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;" border="1">
+      <tr>
+        <td style="width: 100%; text-align: left; padding: 5px; height: 35px;">
+          Berdasarkan Hasil Penilaian Semester Ganjil dan Genap Tahun Pelajaran
+          <?php echo $tahun['tahun_pelajaran'] ?>, maka Peserta Didik <br> dinyatakan : <b>Naik Ke Tingkat
+            <?php echo $datatingkat['tingkat']?></b> / <b>Tinggal di Kelas
+            <?php echo $kelas['nama_kelas'] ?></b>
+        </td>
+      </tr>
+    </table>
   </div>
 
   <?php } ?>
