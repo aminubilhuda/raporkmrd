@@ -92,12 +92,13 @@ window.location.href =
 ?>
 
 <?php 
+// Definisikan variabel yang diperlukan
+$tanggal_presensi = isset($_GET['tanggal']) ? mysqli_real_escape_string($mysqli, $_GET['tanggal']) : date('Y-m-d');
+$orderID = isset($_GET['orderID']) ? mysqli_real_escape_string($mysqli, $_GET['orderID']) : '';
+
 if(empty($_GET['filter']) && !empty($orderID)){ 
     $kelas = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM kelas WHERE id_kelas='$orderID'"));
     
-    // Mengambil tanggal dari URL jika ada, jika tidak gunakan tanggal hari ini
-    $tanggal_presensi = isset($_GET['tanggal']) ? mysqli_real_escape_string($mysqli, $_GET['tanggal']) : date('Y-m-d');
-
     // Ambil nilai bulan dari tanggal presensi
     $bulan_presensi = date('m', strtotime($tanggal_presensi)); // Ekstraksi bulan dengan PHP
 
@@ -150,16 +151,15 @@ Swal.fire({
                                     JOIN siswa ON siswa_kelas.id_siswa = siswa.id_siswa
                                     WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_kelas='$orderID' ORDER BY nama_siswa ASC");
                                     
-                                    $presensi_today_query = mysqli_query($mysqli, "SELECT p.*, COUNT(p.id_siswa) as presensi_count 
+                                    $presensi_today_query = mysqli_query($mysqli, "SELECT p.* 
                                     FROM presensi p 
-                                    WHERE p.tahun='$sekolah[tahun]' AND p.semester='$sekolah[semester]' AND p.id_kelas='$orderID'
-                                    GROUP BY p.id_siswa, p.id_absen");
+                                    WHERE p.tahun='$sekolah[tahun]' AND p.semester='$sekolah[semester]' AND p.id_kelas='$orderID' AND p.tanggal='$tanggal_presensi'
+                                    ");
                                     
                                     $presensi_today = [];
                                     while($rpresensi = mysqli_fetch_array($presensi_today_query)){
                                         $presensi_today[$rpresensi['id_siswa']][$rpresensi['id_absen']] = [
-                                            'jumlah' => $rpresensi['jumlah'],
-                                            'count' => $rpresensi['presensi_count']
+                                            'jumlah' => $rpresensi['jumlah']
                                         ];
                                     }
 
@@ -173,7 +173,7 @@ Swal.fire({
                                     $absen = mysqli_query($mysqli, "SELECT * FROM absen WHERE id_absen > 1 ORDER BY id_absen ASC");
                                     while($rabsen = mysqli_fetch_array($absen)) {
                                         $presensi_data = isset($presensi_today[$rkelas['id_siswa']][$rabsen['id_absen']]) ? $presensi_today[$rkelas['id_siswa']][$rabsen['id_absen']] : ['jumlah' => 0, 'count' => 0];
-                                        $display_value = $presensi_data['jumlah'] == 0 ? $presensi_data['count'] : $presensi_data['jumlah'];
+                                        $display_value = $presensi_data['jumlah'];
                                     ?>
                                     <td>
                                         <input type="text" class="form-control"
@@ -199,28 +199,21 @@ Swal.fire({
             // Loop melalui setiap siswa dan absen untuk menyimpan presensi
             foreach ($siswa as $id_siswa => $absensi) {
                 foreach ($absensi as $id_absen => $jumlahInput) {
-                    // Hanya masukkan presensi jika jumlahnya bukan kosong dan lebih dari 0
-                    if (!empty($jumlahInput) && intval($jumlahInput) > 0) {
+                    // Hanya masukkan presensi jika input berupa angka valid (termasuk 0)
+                    if (is_numeric($jumlahInput)) {
                         $id_siswa = mysqli_real_escape_string($mysqli, $id_siswa);
                         $id_absen = mysqli_real_escape_string($mysqli, $id_absen);
                         $jumlahInput = mysqli_real_escape_string($mysqli, $jumlahInput);
 
-                        // Mengecek apakah sudah ada data presensi untuk siswa dan absen yang spesifik
-                        $cekabsen = mysqli_num_rows(mysqli_query($mysqli, "SELECT * FROM presensi WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_absen='$id_absen' AND id_kelas='$orderID' AND id_siswa='$id_siswa'
-                        -- AND tanggal='$tanggal_presensi'
-                        "));
+                        // Mengecek apakah sudah ada data presensi untuk siswa dan absen yang spesifik pada tanggal tertentu
+                        $cekabsen = mysqli_num_rows(mysqli_query($mysqli, "SELECT * FROM presensi WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_absen='$id_absen' AND id_kelas='$orderID' AND id_siswa='$id_siswa' AND tanggal='$tanggal_presensi'"));
 
                         // Jika tidak ada, maka data baru akan dimasukkan
                         if ($cekabsen == 0) {
-                            mysqli_query($mysqli, "INSERT INTO presensi SET tahun='$sekolah[tahun]', semester='$sekolah[semester]', id_kelas='$orderID', id_siswa='$id_siswa', id_absen='$id_absen', jumlah='$jumlahInput',
-                            -- tanggal='$tanggal_presensi',
-                            -- bulan='$bulan_presensi'
-                            ");
+                            mysqli_query($mysqli, "INSERT INTO presensi SET tahun='$sekolah[tahun]', semester='$sekolah[semester]', id_kelas='$orderID', id_siswa='$id_siswa', id_absen='$id_absen', jumlah='$jumlahInput', tanggal='$tanggal_presensi', bulan='$bulan_presensi'");
                         } else {
                             // Jika sudah ada, maka data akan diperbarui
-                            mysqli_query($mysqli, "UPDATE presensi SET jumlah='$jumlahInput', bulan='$bulan_presensi' WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_siswa='$id_siswa' AND id_absen='$id_absen' AND id_kelas='$orderID'
-                            -- AND tanggal='$tanggal_presensi'
-                            ");
+                            mysqli_query($mysqli, "UPDATE presensi SET jumlah='$jumlahInput', bulan='$bulan_presensi' WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_siswa='$id_siswa' AND id_absen='$id_absen' AND id_kelas='$orderID' AND tanggal='$tanggal_presensi'");
                         }
                     }
                 }

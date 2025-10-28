@@ -390,18 +390,24 @@ h3 {
             // Iterasi setiap data absen
             while ($rabsen = mysqli_fetch_array($absen)) {
                 
-                // Query untuk mengecek presensi berdasarkan tahun, semester, id_absen dan id_siswa
-                $presensi_result = mysqli_query($mysqli,"SELECT * FROM presensi 
-                WHERE tahun='$sekolah[tahun]' 
-                AND semester='$sekolah[semester]' 
-                AND id_absen='$rabsen[id_absen]' 
-                AND id_siswa='$_GET[orderID]'");
-
-                // Hitung jumlah data presensi yang ditemukan
-                $presensi_count = mysqli_num_rows($presensi_result);
+                // Query untuk menghitung total presensi dari data input harian dan data jumlah
+                // Ini akan menangani kedua skenario: input jumlah (dari absensi-bk) dan harian (dari piket-harian)
+                $presensi_result = mysqli_query($mysqli,"
+                    SELECT 
+                        SUM(CASE 
+                            WHEN jumlah > 0 THEN jumlah 
+                            ELSE 1 
+                        END) as total_jumlah 
+                    FROM presensi 
+                    WHERE tahun='$sekolah[tahun]' 
+                    AND semester='$sekolah[semester]' 
+                    AND id_absen='$rabsen[id_absen]' 
+                    AND id_siswa='$_GET[orderID]'
+                ");
 
                 // Ambil data presensi jika ada
                 $presensi_data = mysqli_fetch_array($presensi_result);
+                $total_jumlah = $presensi_data['total_jumlah'];
             ?>
         <tr>
             <td style="width: 35%; text-align: left; padding: 3px;">
@@ -409,19 +415,11 @@ h3 {
             </td>
             <td style="width: 65%; text-align: left; padding: 3px;">
                 <?php 
-                // Jika tidak ada presensi, tampilkan "-"
-                if ($presensi_count == 0) {
+                // Jika tidak ada presensi atau total jumlah adalah 0, tampilkan "-"
+                if ($total_jumlah == 0 || $total_jumlah == "") {
                     echo "-";
                 } else {
-                    // Cek apakah kolom 'jumlah' memiliki nilai dan tidak kosong
-                    if (isset($presensi_data['jumlah']) && $presensi_data['jumlah'] != "") {
-                       
-                        echo $presensi_data['jumlah'];
-                       
-                    } else {
-                        // Jika 'jumlah' tidak ada, langsung tampilkan presensi_count
-                        echo $presensi_count;
-                    }
+                    echo $total_jumlah;
                 }
                 ?> Hari
             </td>

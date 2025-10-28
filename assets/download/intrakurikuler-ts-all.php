@@ -55,88 +55,88 @@ while ($siswa = mysqli_fetch_array($siswaQuery)) {
 
 <style type="text/css">
 table.page_header {
-    width: 780px;
-    border: none;
-    padding: 2mm;
-    margin-top: -50px;
-    font-size: 10px;
-    margin-left: -10px;
+  width: 780px;
+  border: none;
+  padding: 2mm;
+  margin-top: -50px;
+  font-size: 10px;
+  margin-left: -10px;
 }
 
 table.page_footer {
-    width: 780px;
-    border: none;
-    background-color: #fba4c7;
-    border-top: solid 1mm red;
-    padding: 2mm;
-    margin-left: -10px;
+  width: 780px;
+  border: none;
+  background-color: #fba4c7;
+  border-top: solid 1mm red;
+  padding: 2mm;
+  margin-left: -10px;
 }
 
 h1 {
-    color: #000033
+  color: #000033
 }
 
 h2 {
-    color: #000055
+  color: #000055
 }
 
 h3 {
-    color: #000077
+  color: #000077
 }
 </style>
 
 <page backtop="37mm" backbottom="7mm" backleft="7mm" backright="10mm">
-    <page_header width="750" align="center">
-        <table style="width: 96%; border-collapse: collapse; margin-top: 20px; margin-left:23px;">
-            <tr>
-                <td style="width: 25%; text-align: left; height: 15px; font-size: 12px;">Nama</td>
-                <td style="width: 3%; text-align: center;">:</td>
-                <td style="width: 37%; text-align: left; font-size: 12px;">
-                    <?php echo strtoupper($siswa['nama_siswa']) ?></td>
-                <td style="width: 5%; text-align: center;"></td>
-                <td style="width: 17%; text-align: left; font-size: 12px;">Kelas</td>
-                <td style="width: 3%; text-align: center;">:</td>
-                <td style="width: 17%; text-align: left; font-size: 12px;">
-                    <?php echo strtoupper($kelas['nama_kelas']) ?></td>
-            </tr>
-            <tr>
-                <td style="width: 25%; text-align: left; height: 15px; font-size: 12px;">NIS / NISN</td>
-                <td style="width: 3%; text-align: center;">:</td>
-                <td style="width: 37%; text-align: left; font-size: 12px;">
-                    <?php echo strtoupper($siswa['nis']." / ".$siswa['nisn']) ?>
-                </td>
-                <td style="width: 5%; text-align: center;"></td>
-                <td style="width: 17%; text-align: left; font-size: 12px;">Fase</td>
-                <td style="width: 3%; text-align: center;">:</td>
-                <td style="width: 17%; text-align: left; font-size: 12px;"><?php echo strtoupper($kelas['fase']) ?></td>
-            </tr>
-            <tr>
-                <td style="width: 25%; text-align: left; height: 15px; font-size: 12px;">Nama Sekolah</td>
-                <td style="width: 3%; text-align: center;">:</td>
-                <td style="width: 37%; text-align: left; font-size: 12px;">
-                    <?php echo strtoupper($sekolah['nama_sekolah']) ?></td>
-                <td style="width: 5%; text-align: center;"></td>
-                <td style="width: 17%; text-align: left; font-size: 12px;">Semester</td>
-                <td style="width: 3%; text-align: center;">:</td>
-                <td style="width: 17%; text-align: left; font-size: 12px;">
-                    <?php echo strtoupper($semester['semester']) ?></td>
-            </tr>
-            <tr>
-                <td style="width: 25%; text-align: left; height: 15px; font-size: 12px;">Alamat</td>
-                <td style="width: 3%; text-align: center;">:</td>
-                <td style="width: 37%; text-align: left; font-size: 12px;"><?php echo strtoupper($sekolah['alamat']) ?>
-                </td>
-                <td style="width: 5%; text-align: center;"></td>
-                <td style="width: 17%; text-align: left; font-size: 12px;">Tahun Pelajaran</td>
-                <td style="width: 3%; text-align: center;">:</td>
-                <td style="width: 17%; text-align: left; font-size: 12px;">
-                    <?php echo strtoupper($tahun['tahun_pelajaran']) ?></td>
-            </tr>
-        </table>
-        <hr style="margin-left:23px; width:87%;">
-    </page_header>
+  <page_header width="750" align="center">
+    <table style="width: 96%; border-collapse: collapse; margin-top: 20px; margin-left:23px;">
+      <tr>
+        <td style="width: 25%; text-align: left; height: 15px; font-size: 12px;">Nama</td>
+        <td style="width: 3%; text-align: center;">:</td>
+        <td style="width: 37%; text-align: left; font-size: 12px;">
+          <?php echo strtoupper($siswa['nama_siswa']) ?></td>
+        <td style="width: 5%; text-align: center;"></td>
+        <td style="width: 17%; text-align: left; font-size: 12px;">Kelas</td>
+        <td style="width: 3%; text-align: center;">:</td>
+        <td style="width: 17%; text-align: left; font-size: 12px;">
+          <?php echo strtoupper($kelas['nama_kelas']) ?></td>
+      </tr>
+      <tr>
+        <td style="width: 25%; text-align: left; height: 15px; font-size: 12px;">NIS / NISN</td>
+        <td style="width: 3%; text-align: center;">:</td>
+        <td style="width: 37%; text-align: left; font-size: 12px;">
+          <?php echo strtoupper($siswa['nis']." / ".$siswa['nisn']) ?>
+        </td>
+        <td style="width: 5%; text-align: center;"></td>
+        <td style="width: 17%; text-align: left; font-size: 12px;">Fase</td>
+        <td style="width: 3%; text-align: center;">:</td>
+        <td style="width: 17%; text-align: left; font-size: 12px;"><?php echo strtoupper($kelas['fase']) ?></td>
+      </tr>
+      <tr>
+        <td style="width: 25%; text-align: left; height: 15px; font-size: 12px;">Nama Sekolah</td>
+        <td style="width: 3%; text-align: center;">:</td>
+        <td style="width: 37%; text-align: left; font-size: 12px;">
+          <?php echo strtoupper($sekolah['nama_sekolah']) ?></td>
+        <td style="width: 5%; text-align: center;"></td>
+        <td style="width: 17%; text-align: left; font-size: 12px;">Semester</td>
+        <td style="width: 3%; text-align: center;">:</td>
+        <td style="width: 17%; text-align: left; font-size: 12px;">
+          <?php echo strtoupper($semester['semester']) ?></td>
+      </tr>
+      <tr>
+        <td style="width: 25%; text-align: left; height: 15px; font-size: 12px;">Alamat</td>
+        <td style="width: 3%; text-align: center;">:</td>
+        <td style="width: 37%; text-align: left; font-size: 12px;"><?php echo strtoupper($sekolah['alamat']) ?>
+        </td>
+        <td style="width: 5%; text-align: center;"></td>
+        <td style="width: 17%; text-align: left; font-size: 12px;">Tahun Pelajaran</td>
+        <td style="width: 3%; text-align: center;">:</td>
+        <td style="width: 17%; text-align: left; font-size: 12px;">
+          <?php echo strtoupper($tahun['tahun_pelajaran']) ?></td>
+      </tr>
+    </table>
+    <hr style="margin-left:23px; width:87%;">
+  </page_header>
 
-    <!-- <page_footer width="750">
+  <!-- <page_footer width="750">
         <?php if($current_page != [[page_nb]]) { ?>
         <hr style="margin-left:23px; width:85%; color:#f1efef;">
         <table style="margin-left:23px; width:100%;">
@@ -148,53 +148,53 @@ h3 {
         </table>
         <?php } ?>
     </page_footer> -->
-    <page_footer width="750">
-        <hr style="margin-left:23px; width:85%; color:#f1efef;">
-        <table style="margin-left:23px; width:100%;">
-            <tr>
-                <td style="width: 50%; text-align: left; font-size: 10px;">
-                    <?php echo $kelas['nama_kelas']?> / <?php echo $siswa['nama_siswa']?> / <?php echo $siswa['nisn']?>
-                </td>
-                <td style="width: 50%; text-align: right; font-size: 10px;">
-                    Halaman <?php echo $siswa_halaman; ?>
-                    <!-- Halaman per siswa -->
-                </td>
-            </tr>
-        </table>
-    </page_footer>
-
-    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-        <tr>
-            <td style="width: 100%; text-align: center; font-size:18px;"><b>LAPORAN HASIL BELAJAR TENGAH SEMESTER</b>
-            </td>
-        </tr>
+  <page_footer width="750">
+    <hr style="margin-left:23px; width:85%; color:#f1efef;">
+    <table style="margin-left:23px; width:100%;">
+      <tr>
+        <td style="width: 50%; text-align: left; font-size: 10px;">
+          <?php echo $kelas['nama_kelas']?> / <?php echo $siswa['nama_siswa']?> / <?php echo $siswa['nisn']?>
+        </td>
+        <td style="width: 50%; text-align: right; font-size: 10px;">
+          Halaman <?php echo $siswa_halaman; ?>
+          <!-- Halaman per siswa -->
+        </td>
+      </tr>
     </table>
+  </page_footer>
 
-    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-        <tr>
-            <td style="width: 100%; text-align: left;"><b></b></td>
-        </tr>
-    </table>
+  <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+    <tr>
+      <td style="width: 100%; text-align: center; font-size:18px;"><b>LAPORAN HASIL BELAJAR TENGAH SEMESTER</b>
+      </td>
+    </tr>
+  </table>
 
-    <!-- Isi laporan nilai, predikat, dan absensi -->
-    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;" border="1">
-        <tr style="background-color: #FFFEC5;">
-            <td style="width: 5%; text-align: center; vertical-align: middle; height: 30px;"><b>No</b></td>
-            <td style="width: 50%; text-align: center; vertical-align: middle; height: 30px;"><b>Mata Pelajaran</b></td>
-            <td style="width: 15%; text-align: center; vertical-align: middle; height: 30px;"><b>Nilai</b></td>
-            <td style="width: 15%; text-align: center; vertical-align: middle; height: 30px;"><b>Predikat</b></td>
-        </tr>
-        <?php
+  <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+    <tr>
+      <td style="width: 100%; text-align: left;"><b></b></td>
+    </tr>
+  </table>
+
+  <!-- Isi laporan nilai, predikat, dan absensi -->
+  <table style="width: 100%; border-collapse: collapse; margin-top: 10px;" border="1">
+    <tr style="background-color: #FFFEC5;">
+      <td style="width: 5%; text-align: center; vertical-align: middle; height: 30px;"><b>No</b></td>
+      <td style="width: 50%; text-align: center; vertical-align: middle; height: 30px;"><b>Mata Pelajaran</b></td>
+      <td style="width: 15%; text-align: center; vertical-align: middle; height: 30px;"><b>Nilai</b></td>
+      <td style="width: 15%; text-align: center; vertical-align: middle; height: 30px;"><b>Predikat</b></td>
+    </tr>
+    <?php
     	$kelompokmapel = mysqli_query($mysqli,"SELECT * FROM kelompok_mapel ORDER BY id_kelompok ASC");
     	while($rkelompok = mysqli_fetch_array($kelompokmapel)){
     	?>
-        <tr>
-            <td style="width: 100%; text-align: left; padding:5px; height: 10px;" colspan="4">
-                <b><?php echo $rkelompok['huruf'].". ".$rkelompok['kelompok']?></b>
-            </td>
-        </tr>
+    <tr>
+      <td style="width: 100%; text-align: left; padding:5px; height: 10px;" colspan="4">
+        <b><?php echo $rkelompok['huruf'].". ".$rkelompok['kelompok']?></b>
+      </td>
+    </tr>
 
-        <?php  
+    <?php  
     	$nomor=1;
         $mapel = mysqli_query($mysqli, "
             SELECT DISTINCT m.id_mapel, m.nama_mapel, m.urut
@@ -279,12 +279,12 @@ h3 {
             // $nilai_rapor_mid = round($jumlah_nilai_total / 3);
 
     	?>
-        <tr>
-            <td style="width: 5%; text-align: center; vertical-align: middle; "><?php echo $nomor++ ?></td>
-            <td style="width: 3%; text-align: left; padding: 5px; ">
-                <?php echo $rmapel['nama_mapel'] ?></td>
-            <td style="width: 15%; text-align: center; vertical-align: middle; ">
-                <?php
+    <tr>
+      <td style="width: 5%; text-align: center; vertical-align: middle; "><?php echo $nomor++ ?></td>
+      <td style="width: 3%; text-align: left; padding: 5px; ">
+        <?php echo $rmapel['nama_mapel'] ?></td>
+      <td style="width: 15%; text-align: center; vertical-align: middle; ">
+        <?php
                     $query_kktp = mysqli_fetch_array(mysqli_query($mysqli,"SELECT DISTINCT kktp
                     FROM tujuan_pembelajaran
                     WHERE id_mapel = '$rmapel[id_mapel]'
@@ -303,9 +303,9 @@ h3 {
                         echo "<span style='color: black;'>$nilai_sumatif_ts</span>";
                     }
                 ?>
-            </td>
-            <td style="width: 15%; text-align: center; padding: 3px; vertical-align: middle; ">
-                <?php  
+      </td>
+      <td style="width: 15%; text-align: center; padding: 3px; vertical-align: middle; ">
+        <?php  
     			// $datamax = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM nilai_sumatif_ts WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_kelas='$siswakelas[id_kelas]' AND id_mapel='$rmapel[id_mapel]' AND id_siswa='$siswa[id_siswa]' ORDER BY nilai DESC LIMIT 1"));
     			
     			// $nilaimax = $datamax['nilai'];
@@ -322,147 +322,145 @@ h3 {
                 
 
     			?>
-            </td>
-        </tr>
-        <?php } ?>
+      </td>
+    </tr>
+    <?php } ?>
 
 
 
 
-        <?php } ?>
+    <?php } ?>
 
 
-    </table>
+  </table>
 
-    <!-- Absensi siswa -->
-    <table style="width: 50%; border-collapse: collapse; margin-top: 10px;" border="1">
-        <?php  
+  <!-- Absensi siswa -->
+  <table style="width: 50%; border-collapse: collapse; margin-top: 10px;" border="1">
+    <?php  
             // Ambil semua data dari tabel absen di mana id_absen > 1
             $absen = mysqli_query($mysqli,"SELECT * FROM absen WHERE id_absen > 1 ORDER BY id_absen ASC");
             
             // Iterasi setiap data absen
             while ($rabsen = mysqli_fetch_array($absen)) {
                 
-                // Query untuk mengecek presensi berdasarkan tahun, semester, id_absen dan id_siswa
-                $presensi_result = mysqli_query($mysqli,"SELECT * FROM presensi 
-                WHERE tahun='$sekolah[tahun]' 
-                AND semester='$sekolah[semester]' 
-                AND id_absen='$rabsen[id_absen]' 
-                AND id_siswa='$siswa[id_siswa]'");
-
-                // Hitung jumlah data presensi yang ditemukan
-                $presensi_count = mysqli_num_rows($presensi_result);
+                // Query untuk menghitung total presensi dari data input harian dan data jumlah
+                // Ini akan menangani kedua skenario: input jumlah (dari absensi-bk) dan harian (dari piket-harian)
+                $presensi_result = mysqli_query($mysqli,"
+                    SELECT 
+                        SUM(CASE 
+                            WHEN jumlah > 0 THEN jumlah 
+                            ELSE 1 
+                        END) as total_jumlah 
+                    FROM presensi 
+                    WHERE tahun='$sekolah[tahun]' 
+                    AND semester='$sekolah[semester]' 
+                    AND id_absen='$rabsen[id_absen]' 
+                    AND id_siswa='$siswa[id_siswa]'
+                ");
 
                 // Ambil data presensi jika ada
                 $presensi_data = mysqli_fetch_array($presensi_result);
+                $total_jumlah = $presensi_data['total_jumlah'];
             ?>
-        <tr>
-            <td style="width: 35%; text-align: left; padding: 3px;">
-                <?php echo $rabsen['absen'] ?>
-            </td>
-            <td style="width: 65%; text-align: left; padding: 3px;">
-            <?php 
-                // Jika tidak ada presensi, tampilkan "-"
-                if ($presensi_count == 0) {
+    <tr>
+      <td style="width: 35%; text-align: left; padding: 3px;">
+        <?php echo $rabsen['absen'] ?>
+      </td>
+      <td style="width: 65%; text-align: left; padding: 3px;">
+        <?php 
+                // Jika tidak ada presensi atau total jumlah adalah 0, tampilkan "-"
+                if ($total_jumlah == 0 || $total_jumlah == "") {
                     echo "-";
                 } else {
-                    // Cek apakah kolom 'jumlah' memiliki nilai dan tidak kosong
-                    if (isset($presensi_data['jumlah']) && $presensi_data['jumlah'] != "") {
-                       
-                        echo $presensi_data['jumlah'];
-                       
-                    } else {
-                        // Jika 'jumlah' tidak ada, langsung tampilkan presensi_count
-                        echo $presensi_count;
-                    }
+                    echo $total_jumlah;
                 }
                 ?> Hari
-            </td>
-        </tr>
-        <?php } ?>
-    </table>
+      </td>
+    </tr>
+    <?php } ?>
+  </table>
 
 
-    <!--<?php if($sekolah['semester']==2){ ?>-->
-    <!--<table style="width: 100%; border-collapse: collapse; margin-top: 20px;">-->
-    <!--    <tr>-->
-    <!--        <td style="width: 100%; text-align: left;"><b>KETERANGAN KENAIKAN KELAS</b></td>-->
-    <!--    </tr>-->
-    <!--</table>-->
+  <!--<?php if($sekolah['semester']==2){ ?>-->
+  <!--<table style="width: 100%; border-collapse: collapse; margin-top: 20px;">-->
+  <!--    <tr>-->
+  <!--        <td style="width: 100%; text-align: left;"><b>KETERANGAN KENAIKAN KELAS</b></td>-->
+  <!--    </tr>-->
+  <!--</table>-->
 
-    <!-- data Keterangan Naik Kelas -->
+  <!-- data Keterangan Naik Kelas -->
 
-    <!--<table style="width: 100%; border-collapse: collapse; margin-top: 10px;" border="1">-->
-    <!--    <tr>-->
-    <!--        <td style="width: 100%; text-align: left; padding: 5px; height: 35px;">-->
-    <!--            Berdasarkan Hasil Penilaian Semester Ganjil dan Genap Tahun Pelajaran-->
-    <!--            <?php echo $tahun['tahun_pelajaran'] ?>, maka Peserta Didik <br> dinyatakan : <b>Naik Ke Tingkat-->
-    <!--                <?php echo $datatingkat['tingkat']?></b> / <b>Tinggal di Kelas-->
-    <!--                <?php echo $kelas['nama_kelas'] ?></b>-->
-    <!--        </td>-->
-    <!--    </tr>-->
-    <!--</table>-->
+  <!--<table style="width: 100%; border-collapse: collapse; margin-top: 10px;" border="1">-->
+  <!--    <tr>-->
+  <!--        <td style="width: 100%; text-align: left; padding: 5px; height: 35px;">-->
+  <!--            Berdasarkan Hasil Penilaian Semester Ganjil dan Genap Tahun Pelajaran-->
+  <!--            <?php echo $tahun['tahun_pelajaran'] ?>, maka Peserta Didik <br> dinyatakan : <b>Naik Ke Tingkat-->
+  <!--                <?php echo $datatingkat['tingkat']?></b> / <b>Tinggal di Kelas-->
+  <!--                <?php echo $kelas['nama_kelas'] ?></b>-->
+  <!--        </td>-->
+  <!--    </tr>-->
+  <!--</table>-->
 
-    <!--<?php } ?>-->
+  <!--<?php } ?>-->
 
 
-    <table style="width: 100%; border-collapse: collapse; margin-top: 25px;">
-        <tr>
-            <td style="width: 40%; text-align: center; padding: 5px;">Mengetahui, </td>
-            <td style="width: 20%; text-align: left; padding: 5px;"></td>
-            <td style="width: 40%; text-align: center; padding: 5px;">
-                <?php if($sekolah['lokasi']==1){ echo $sekolah['kabupaten'];}elseif($sekolah['lokasi']==2){ echo $sekolah['kecamatan']; }elseif($sekolah['lokasi']==3){ echo $sekolah['desa'];} ?>,
-                <?php echo tgl_indonesia($pembagian['tanggal_mid']) ?>
-            </td>
-        </tr>
-        <tr>
-            <td style="width: 40%; text-align: center; padding: 5px;">Orang Tua / Wali Peserta Didik</td>
-            <td style="width: 20%; text-align: left; padding: 5px;"></td>
-            <td style="width: 40%; text-align: center; padding: 5px;">Wali Kelas </td>
-        </tr>
-        <tr>
-            <td style="width: 40%; text-align: center; padding: 5px; height: 40px;"></td>
-            <td style="width: 20%; text-align: left; padding: 5px; height: 40px;"></td>
-            <td style="width: 40%; text-align: center; padding: 5px; height: 40px;"></td>
-        </tr>
-        <tr>
-            <td style="width: 40%; text-align: center; padding: 5px;">
-                (....................................................)</td>
-            <td style="width: 20%; text-align: left; padding: 5px;"></td>
-            <td style="width: 40%; text-align: center; padding: 5px;"><b><u><?php echo $user['nama'] ?></u></b></td>
-        </tr>
-        <tr>
-            <td style="width: 40%; text-align: center; padding: 5px;"></td>
-            <td style="width: 20%; text-align: left; padding: 5px;"></td>
-            <td style="width: 40%; text-align: center; padding: 5px;">NIP. <?php echo $user['nip'] ?></td>
-        </tr>
+  <table style="width: 100%; border-collapse: collapse; margin-top: 25px;">
+    <tr>
+      <td style="width: 40%; text-align: center; padding: 5px;">Mengetahui, </td>
+      <td style="width: 20%; text-align: left; padding: 5px;"></td>
+      <td style="width: 40%; text-align: center; padding: 5px;">
+        <?php if($sekolah['lokasi']==1){ echo $sekolah['kabupaten'];}elseif($sekolah['lokasi']==2){ echo $sekolah['kecamatan']; }elseif($sekolah['lokasi']==3){ echo $sekolah['desa'];} ?>,
+        <?php echo tgl_indonesia($pembagian['tanggal_mid']) ?>
+      </td>
+    </tr>
+    <tr>
+      <td style="width: 40%; text-align: center; padding: 5px;">Orang Tua / Wali Peserta Didik</td>
+      <td style="width: 20%; text-align: left; padding: 5px;"></td>
+      <td style="width: 40%; text-align: center; padding: 5px;">Wali Kelas </td>
+    </tr>
+    <tr>
+      <td style="width: 40%; text-align: center; padding: 5px; height: 40px;"></td>
+      <td style="width: 20%; text-align: left; padding: 5px; height: 40px;"></td>
+      <td style="width: 40%; text-align: center; padding: 5px; height: 40px;"></td>
+    </tr>
+    <tr>
+      <td style="width: 40%; text-align: center; padding: 5px;">
+        (....................................................)</td>
+      <td style="width: 20%; text-align: left; padding: 5px;"></td>
+      <td style="width: 40%; text-align: center; padding: 5px;"><b><u><?php echo $user['nama'] ?></u></b></td>
+    </tr>
+    <tr>
+      <td style="width: 40%; text-align: center; padding: 5px;"></td>
+      <td style="width: 20%; text-align: left; padding: 5px;"></td>
+      <td style="width: 40%; text-align: center; padding: 5px;">NIP. <?php echo $user['nip'] ?></td>
+    </tr>
 
-        <tr>
-            <td style="width: 40%; text-align: center; padding: 5px; height: 15px;"></td>
-            <td style="width: 20%; text-align: left; padding: 5px; height: 15px;"></td>
-            <td style="width: 40%; text-align: center; padding: 5px; height: 15px;"></td>
-        </tr>
-        <tr>
-            <td style="width: 100%; text-align: center; padding: 5px;" colspan="3">Mengesahkan,</td>
-        </tr>
-        <tr>
-            <td style="width: 100%; text-align: center; padding: 5px;" colspan="3">Kepala Sekolah,</td>
-        </tr>
-        <tr>
-            <td style="width: 100%; text-align: center; padding: 5px; height: 40px;" colspan="3"></td>
-        </tr>
-        <tr>
-            <td style="width: 100%; text-align: center; padding: 5px;" colspan="3">
-                <b><u><?php echo $kepala['nama'] ?></u></b>
-            </td>
-        </tr>
+    <tr>
+      <td style="width: 40%; text-align: center; padding: 5px; height: 15px;"></td>
+      <td style="width: 20%; text-align: left; padding: 5px; height: 15px;"></td>
+      <td style="width: 40%; text-align: center; padding: 5px; height: 15px;"></td>
+    </tr>
+    <tr>
+      <td style="width: 100%; text-align: center; padding: 5px;" colspan="3">Mengesahkan,</td>
+    </tr>
+    <tr>
+      <td style="width: 100%; text-align: center; padding: 5px;" colspan="3">Kepala Sekolah,</td>
+    </tr>
+    <tr>
+      <td style="width: 100%; text-align: center; padding: 5px; height: 40px;" colspan="3"></td>
+    </tr>
+    <tr>
+      <td style="width: 100%; text-align: center; padding: 5px;" colspan="3">
+        <b><u><?php echo $kepala['nama'] ?></u></b>
+      </td>
+    </tr>
 
-        <!-- <tr>
+    <!-- <tr>
             <td style="width: 100%; text-align: center; padding: 5px;" colspan="3">NIP. <?php echo $kepala['nip'] ?>
             </td>
         </tr> -->
 
-    </table>
+  </table>
 
 </page>
 
