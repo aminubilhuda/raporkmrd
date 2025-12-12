@@ -94,11 +94,10 @@
             <li><a href="?pages=pengingat">Pesan Jadwal</a></li>
             <li><a href="#">Pesan Broadcast</a></li>
             <li><a href="?pages=laporan_wa">Laporan Kirim</a></li>
-
           </ul>
         </li>
         <li class="has_sub">
-          <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-whatsapp"></i> <span>Managemen P5BK
+          <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-book"></i> <span>Managemen P5BK
             </span> <span class="float-right"><i class="mdi mdi-chevron-right"></i></span></a>
           <ul class="list-unstyled">
             <li><a href="?pages=managemen-tema">Managemen Tema</a></li>
@@ -107,7 +106,13 @@
             <li><a href="?pages=managemen-sub-elemen">Managemen Sub Elemen</a></li>
           </ul>
         </li>
+
+        <li>
+          <a href="?pages=kokurikuler" class="waves-effect"><i class="mdi mdi-star"></i><span>
+              Kokurikuler
+            </span></a>
         </li>
+
         <li>
           <a href="?pages=pengaturan" class="waves-effect"><i class="mdi mdi-settings"></i><span> Pengaturan
             </span></a>

@@ -47,6 +47,9 @@
           'managemen-sub-elemen' => 'managemen-sub-elemen.php',
           'penilaian-profil-pancasila' => 'penilaian-profil-pancasila.php',
           'p5bk' => 'p5bk.php',
+          'kokurikuler' => 'kokurikuler.php',
+          'detail-kokurikuler'=> 'detail-kokurikuler.php',
+          'penilaian-kokurikuler' => 'penilaian-kokurikuler.php',
           'naik-kelas' => 'naik-kelas.php'
       ];
 

@@ -311,6 +311,44 @@ h3 {
   </table>
   <?php } ?>
 
+      <div style="page-break-inside: avoid;">
+        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+            <tr>
+                <td style="width: 100%; text-align: left;"><b>Kokurikuler</b></td>
+            </tr>
+        </table>
+        <!-- data kokurikuler yang digeluti -->
+
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;" border="1">
+            <tr>
+                <td style="width: 100%; text-align: left; height: 35px; padding: 5px;">
+                <?php  
+                $kokurikuler_query = mysqli_query($mysqli,"SELECT pt.deskripsi, pk.judul_proyek, nk.nilai, dk.keterangan, dim.dimensi FROM proyek_tujuan pt 
+                    JOIN proyek_kelas pk ON pt.id_proyek_kelas = pk.id_proyek_kelas 
+                    JOIN nilai_kokurikuler nk ON pt.id_proyek_tujuan = nk.id_proyek_tujuan
+                    JOIN deskripsi_kokurikuler dk ON nk.nilai = dk.nilai
+                    JOIN dimensi_kokurikuler dim ON pt.id_dimensi = dim.id_dimensi
+                    WHERE pk.tahun='$sekolah[tahun]' 
+                    AND pk.semester='$sekolah[semester]' 
+                    AND pk.id_kelas='$siswakelas[id_kelas]'
+                    AND nk.id_siswa='$_GET[orderID]'");
+
+                $has_data = false;
+                while ($kokurikuler = mysqli_fetch_array($kokurikuler_query)) {
+                    $has_data = true;
+                    // echo "<b>" . $kokurikuler['judul_proyek'] . "</b><br>";
+                    echo "Ananda ".strtolower($kokurikuler['keterangan']) . " dalam penguatan dimensi " . strtolower($kokurikuler['dimensi']) . " terlihat dari " . strtolower($kokurikuler['deskripsi']) . ". ";
+                }
+
+                if (!$has_data) {
+                    echo "-";
+                }
+                ?>
+                </td>
+            </tr>
+        </table>
+    </div>
+
   <div style="page-break-inside: avoid;">
     <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
       <tr>
@@ -321,8 +359,8 @@ h3 {
 
     <table style="width: 100%; border-collapse: collapse; margin-top: 10px;" border="1">
       <tr>
-        <td style="width: 5%; text-align: center;">No</td>
-        <td style="width: 30%; text-align: center;">Ekstrakurikuler</td>
+        <td style="width: 5%; text-align: center; vertical-align: middle; height: 20px;">No</td>
+        <td style="width: 30%; text-align: center; vertical-align: middle; height: 20px;">Ekstrakurikuler</td>
         <td style="width: 15%; text-align: center; vertical-align: middle; height: 20px;">Predikat</td>
         <td style="width: 50%; text-align: center; vertical-align: middle; height: 20px;">Keterangan</td>
       </tr>
@@ -358,81 +396,126 @@ h3 {
     </table>
   </div>
 
-
-
-  <div style="page-break-inside: avoid;">
+    <div style="page-break-inside: avoid;">
     <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
       <tr>
-        <td style="width: 100%; text-align: left;"><b>Ketidakhadiran</b></td>
+        <td style="width: 100%; text-align: left;"><b>Organisasi</b></td>
       </tr>
     </table>
-
-    <!-- data absensi yang digeluti -->
-
-    <table style="width: 50%; border-collapse: collapse; margin-top: 10px;" border="1">
-      <?php  
-            // Ambil semua data dari tabel absen di mana id_absen > 1
-            $absen = mysqli_query($mysqli,"SELECT * FROM absen WHERE id_absen > 1 ORDER BY id_absen ASC");
-            
-            // Iterasi setiap data absen
-            while ($rabsen = mysqli_fetch_array($absen)) {
-                
-                // Query untuk mengecek presensi berdasarkan tahun, semester, id_absen dan id_siswa
-                $presensi_result = mysqli_query($mysqli,"SELECT * FROM presensi 
-                WHERE tahun='$sekolah[tahun]' 
-                AND semester='$sekolah[semester]' 
-                AND id_absen='$rabsen[id_absen]' 
-                AND id_siswa='$_GET[orderID]'");
-
-                // Hitung jumlah data presensi yang ditemukan
-                $presensi_count = mysqli_num_rows($presensi_result);
-
-                // Ambil data presensi jika ada
-                $presensi_data = mysqli_fetch_array($presensi_result);
-            ?>
-      <tr>
-        <td style="width: 35%; text-align: left; padding: 3px;">
-          <?php echo $rabsen['absen'] ?>
-        </td>
-        <td style="width: 65%; text-align: left; padding: 3px;">
-          <?php 
-                // Jika tidak ada presensi, tampilkan "-"
-                if ($presensi_count == 0) {
-                    echo "-";
-                } else {
-                    // Cek apakah kolom 'jumlah' memiliki nilai dan tidak kosong
-                    if (isset($presensi_data['jumlah']) && $presensi_data['jumlah'] != "") {
-                       
-                        echo $presensi_data['jumlah'];
-                       
-                    } else {
-                        // Jika 'jumlah' tidak ada, langsung tampilkan presensi_count
-                        echo $presensi_count;
-                    }
-                }
-                ?> Hari
-        </td>
-      </tr>
-      <?php } ?>
-    </table>
-
-  </div>
-
-  <div style="page-break-inside: avoid;">
-    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-      <tr>
-        <td style="width: 100%; text-align: left;"><b>Catatan Wali Kelas</b></td>
-      </tr>
-    </table>
-    <!-- data catatan wali kelas yang digeluti -->
+    <!-- data Organisasi yang digeluti -->
 
     <table style="width: 100%; border-collapse: collapse; margin-top: 10px;" border="1">
       <tr>
-        <td style="width: 100%; text-align: left; height: 35px; padding: 5px;">
-          <?php  
-                $catatan = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM catatan_wali WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_kelas='$siswakelas[id_kelas]' AND id_siswa='$_GET[orderID]' "));
-                                        echo $catatan['catatan'];
-                ?>
+        <td style="width: 5%; text-align: center; vertical-align: middle; height: 20px;">No</td>
+        <td style="width: 95%; text-align: center; vertical-align: middle; height: 20px;">Organisasi</td>
+        <!-- <td style="width: 15%; text-align: center; vertical-align: middle; height: 20px;">Predikat</td>
+        <td style="width: 50%; text-align: center; vertical-align: middle; height: 20px;">Keterangan</td> -->
+      </tr>
+      <?php  
+        $nomor = 1;
+        $organisasi = mysqli_query($mysqli,"SELECT * FROM siswa_organisasi WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_siswa='$_GET[orderID]' ORDER BY id_organisasi ASC");
+        $jumlah_organisasi = mysqli_num_rows($organisasi); // menghitung jumlah data yang diambil
+
+        if ($jumlah_organisasi > 0) {
+            while ($resorganisasi = mysqli_fetch_array($organisasi)) {
+                $dataorganisasi = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM organisasi WHERE id_organisasi='$resorganisasi[id_organisasi]'"));
+    ?>
+      <tr>
+        <td style="width: 5%; text-align: center;"><?php echo $nomor++ ?></td>
+        <td style="width: 30%; text-align: left; padding: 3px;"><?php echo $dataeskul['nama_eskul'] ?></td>
+        <!-- <td style="width: 15%; text-align: center; vertical-align: middle; padding: 3px;">
+          <?php echo $reskul['predikat'] ?></td>
+        <td style="width: 50%; text-align: left; padding: 3px; vertical-align: middle;">
+          <?php echo $reskul['keterangan'] ?></td> -->
+      </tr>
+      <?php 
+            }
+        } else {
+            // Jika tidak ada data ekstrakurikuler, tampilkan baris kosong
+    ?>
+      <tr>
+        <td style='width: 5%; text-align: center;'>-</td>
+        <td style='width: 95%; text-align: center; padding: 3px;'>-</td>
+        <!-- <td style='width: 15%; text-align: center; vertical-align: middle; padding: 3px;'>-</td>
+        <td style='width: 50%; text-align: center; padding: 3px; vertical-align: middle;'>-</td> -->
+      </tr>
+      <?php } ?>
+    </table>
+  </div>
+
+
+  <div style="page-break-inside: avoid;">
+    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+      <tr>
+        <td style="width: 40%; vertical-align: top; padding-right: 20px;">
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td style="width: 100%; text-align: left;"><b>Ketidakhadiran</b></td>
+              </tr>
+            </table>
+
+            <table style="width: 100%; border-collapse: collapse; margin-top: 10px;" border="1">
+              <?php  
+                    // Ambil semua data dari tabel absen di mana id_absen > 1
+                    $absen = mysqli_query($mysqli,"SELECT * FROM absen WHERE id_absen > 1 ORDER BY id_absen ASC");
+                    
+                    // Iterasi setiap data absen
+                    while ($rabsen = mysqli_fetch_array($absen)) {
+                        
+                        // Query untuk mengecek presensi berdasarkan tahun, semester, id_absen dan id_siswa
+                        $presensi_result = mysqli_query($mysqli,"SELECT * FROM presensi 
+                        WHERE tahun='$sekolah[tahun]' 
+                        AND semester='$sekolah[semester]' 
+                        AND id_absen='$rabsen[id_absen]' 
+                        AND id_siswa='$_GET[orderID]'");
+
+                        // Hitung jumlah data presensi yang ditemukan
+                        $presensi_count = mysqli_num_rows($presensi_result);
+
+                        // Ambil data presensi jika ada
+                        $presensi_data = mysqli_fetch_array($presensi_result);
+                    ?>
+              <tr>
+                <td style="width: 60%; height: 10px; text-align: left; padding: 3px;">
+                  <?php echo $rabsen['absen'] ?>
+                </td>
+                <td style="width: 40%; text-align: left; padding: 3px;">
+                  <?php 
+                        // Jika tidak ada presensi, tampilkan "-"
+                        if ($presensi_count == 0) {
+                            echo "-";
+                        } else {
+                            // Cek apakah kolom 'jumlah' memiliki nilai dan tidak kosong
+                            if (isset($presensi_data['jumlah']) && $presensi_data['jumlah'] != "") {
+                                echo $presensi_data['jumlah'];
+                            } else {
+                                // Jika 'jumlah' tidak ada, langsung tampilkan presensi_count
+                                echo $presensi_count;
+                            }
+                        }
+                        ?> Hari
+                </td>
+              </tr>
+              <?php } ?>
+            </table>
+        </td>
+        <td style="width: 60%; vertical-align: top;">
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td style="width: 100%;text-align: left;"><b>Catatan Wali Kelas</b></td>
+              </tr>
+            </table>
+
+            <table style="width: 100%; border-collapse: collapse; margin-top: 10px;" border="1">
+              <tr>
+                <td style="width: 100%; text-align: left; height: 54px; padding: 5px;">
+                  <?php  
+                        $catatan = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM catatan_wali WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_kelas='$siswakelas[id_kelas]' AND id_siswa='$_GET[orderID]' "));
+                        echo $catatan['catatan'];
+                        ?>
+                </td>
+              </tr>
+            </table>
         </td>
       </tr>
     </table>

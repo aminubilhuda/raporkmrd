@@ -337,8 +337,8 @@ h3 {
 
         <table style="width: 100%; border-collapse: collapse; margin-top: 10px;" border="1">
             <tr>
-                <td style="width: 5%; text-align: center;">No</td>
-                <td style="width: 30%; text-align: center;">Ekstrakurikuler</td>
+                <td style="width: 5%; text-align: center; vertical-align: middle; height: 20px;">No</td>
+                <td style="width: 30%; text-align: center; vertical-align: middle; height: 20px;">Ekstrakurikuler</td>
                 <td style="width: 15%; text-align: center; vertical-align: middle; height: 20px;">Predikat</td>
                 <td style="width: 50%; text-align: center; vertical-align: middle; height: 20px;">Keterangan</td>
             </tr>
