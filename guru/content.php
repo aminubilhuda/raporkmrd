@@ -24,7 +24,9 @@ $valid_pages = [
     'absensi-bk'                => 'absensi-bk.php',
     'penilaian-profil-pancasila' => 'penilaian-profil-pancasila.php',
     'rapor-pkl'                 => 'rapor-pkl.php',
-    'p5bk'                      => 'p5bk.php'
+    'p5bk'                      => 'p5bk.php',
+    'kokurikuler'               => 'kokurikuler.php',
+    'penilaian-kokurikuler'     => 'penilaian-kokurikuler.php'
 ];
 
 // Jika pages kosong atau tidak ada dalam valid_pages, tampilkan dashboard

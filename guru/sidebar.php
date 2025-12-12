@@ -97,6 +97,16 @@
         <?php } ?>
 
         <?php
+        $jumlahproyek = mysqli_num_rows(mysqli_query($mysqli, "SELECT * FROM proyek_kelas WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_user='$_SESSION[id_user]'"));
+        if ($jumlahproyek > 0) { ?>
+        <li>
+          <a href="?pages=kokurikuler" class="waves-effect"><i class="fas fa-project-diagram"></i><span>
+              Kokurikuler
+            </span></a>
+        </li>
+        <?php } ?>
+
+        <?php
                     if ($jumlahwali <> '') {?>
         <li>
           <a href="?pages=anggota-kelas" class="waves-effect"><i class="far fa-user"></i><span>
