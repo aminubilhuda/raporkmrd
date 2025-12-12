@@ -47,7 +47,7 @@ $sekolah = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM sekolah WHERE 
                         <div class="form-group row">
                             <div class="col-12">
                                 <input class="form-control" name="username" type="text" required=""
-                                    placeholder="Username">
+                                    placeholder="Username" autofocus>
                             </div>
                         </div>
                         <div class="form-group row">

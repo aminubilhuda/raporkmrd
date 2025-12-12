@@ -1,5 +1,48 @@
+<?php
+// Create table if not exists
+mysqli_query($mysqli, "CREATE TABLE IF NOT EXISTS `deskripsi_kokurikuler` (
+  `id_deskripsi` int(11) NOT NULL PRIMARY KEY,
+  `kriteria` varchar(255) NOT NULL,
+  `keterangan` varchar(255) NOT NULL,
+  `contoh` varchar(255) NOT NULL,
+  `nilai` int(11) NOT NULL
+)");
+
+// Check if data exists before inserting
+$cek_data = mysqli_query($mysqli, "SELECT id_deskripsi FROM deskripsi_kokurikuler LIMIT 1");
+if (mysqli_num_rows($cek_data) == 0) {
+    // input data 
+    mysqli_query($mysqli,"INSERT INTO `deskripsi_kokurikuler` (`id_deskripsi`, `kriteria`, `keterangan`, `contoh`, `nilai`) VALUES
+    (1, 'Kurang', 'Kurang', '', 1),
+    (2, 'Cukup', 'Cukup', '', 2),
+    (3, 'Baik', 'Baik', '', 3),
+    (4, 'Sangat Baik', 'Sangat baik', '', 4);");
+}
+
+// Create table if not exists
+mysqli_query($mysqli, "CREATE TABLE IF NOT EXISTS `dimensi_kokurikuler` (
+  `id_dimensi` int(11) NOT NULL PRIMARY KEY,
+  `dimensi` varchar(255) NOT NULL
+)");
+
+// Check if data exists before inserting
+$cek_data = mysqli_query($mysqli, "SELECT id_dimensi FROM dimensi_kokurikuler LIMIT 1");
+if (mysqli_num_rows($cek_data) == 0) {
+    // input data 
+    mysqli_query($mysqli,"INSERT INTO `dimensi_kokurikuler` (`id_dimensi`, `dimensi`) VALUES
+(1, 'Keimanan dan Ketakwaan terhadap Tuhan Yang Maha Esa'),
+(2, 'Kewarganegara'),
+(3, 'Penalaran Kritis'),
+(4, 'Kreativitas'),
+(5, 'Kolaborasi'),
+(6, 'Kemandirian'),
+(7, 'Kesehatan'),
+(8, 'Komunikasi');");
+}
+?>
+
 <div class="container-fluid mt-4 bg-white p-4 shadow-sm">
-  <h2>P5 SMKS ABDI NEGARA TUBAN</h2>
+  <h2>KOKURIKULER SMKS ABDI NEGARA TUBAN</h2>
   <div class="mb-3">
     <button class="btn btn-primary" data-toggle="modal" data-target="#tambahKokurikulerModal">Tambah Kegiatan</button>
   </div>
@@ -41,8 +84,8 @@
               class="btn btn-warning btn-sm">Edit</a>
             <a href="?pages=penilaian-kokurikuler&orderID=<?php echo $r['id_proyek_kelas'] ?>&dataID=<?php echo $r['id_kelas'] ?>"
               class="btn btn-success btn-sm">Nilai</a>
-            <a href="?pages=p5bk&filter=hapus&orderID=<?php echo $r['id_proyek_kelas'] ?>"
-              class="btn btn-danger btn-sm">Hapus</a>
+            <a href="?pages=kokurikuler&filter=hapus&orderID=<?php echo $r['id_proyek_kelas'] ?>"
+              class="btn btn-danger btn-sm" onclick="return confirm('Apakah anda yakin ingin menghapus data ini?')">Hapus</a>
           </td>
         </tr>
         <?php } ?>
@@ -151,6 +194,26 @@ window.location.href = "?pages=<?php echo $_GET['pages']?>";
 alert('Gagal');
 </script>
 <?php
+        }
+    }
+
+    if (isset($_GET['filter']) && $_GET['filter'] == 'hapus' && isset($_GET['orderID'])) {
+        $id_proyek_kelas = $_GET['orderID'];
+        $delete = mysqli_query($mysqli, "DELETE FROM proyek_kelas WHERE id_proyek_kelas='$id_proyek_kelas'");
+        if ($delete) {
+            ?>
+            <script>
+            alert('Berhasil menghapus data');
+            window.location.href = "?pages=kokurikuler";
+            </script>
+            <?php
+        } else {
+             ?>
+            <script>
+            alert('Gagal menghapus data');
+            window.location.href = "?pages=kokurikuler";
+            </script>
+            <?php
         }
     }
 
