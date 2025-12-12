@@ -327,6 +327,44 @@ h3 {
     </div>
 
     <div style="page-break-inside: avoid;">
+        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+            <tr>
+                <td style="width: 100%; text-align: left;"><b>Kokurikuler</b></td>
+            </tr>
+        </table>
+        <!-- data kokurikuler yang digeluti -->
+
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;" border="1">
+            <tr>
+                <td style="width: 100%; text-align: left; height: 35px; padding: 5px;">
+                <?php  
+                $kokurikuler_query = mysqli_query($mysqli,"SELECT pt.deskripsi, pk.judul_proyek, nk.nilai, dk.keterangan, dim.dimensi FROM proyek_tujuan pt 
+                    JOIN proyek_kelas pk ON pt.id_proyek_kelas = pk.id_proyek_kelas 
+                    JOIN nilai_kokurikuler nk ON pt.id_proyek_tujuan = nk.id_proyek_tujuan
+                    JOIN deskripsi_kokurikuler dk ON nk.nilai = dk.nilai
+                    JOIN dimensi_kokurikuler dim ON pt.id_dimensi = dim.id_dimensi
+                    WHERE pk.tahun='$sekolah[tahun]' 
+                    AND pk.semester='$sekolah[semester]' 
+                    AND pk.id_kelas='$siswakelas[id_kelas]'
+                    AND nk.id_siswa='$siswa[id_siswa]'");
+
+                $has_data = false;
+                while ($kokurikuler = mysqli_fetch_array($kokurikuler_query)) {
+                    $has_data = true;
+                    // echo "<b>" . $kokurikuler['judul_proyek'] . "</b><br>";
+                    echo "Ananda ".strtolower($kokurikuler['keterangan']) . " dalam penguatan dimensi " . strtolower($kokurikuler['dimensi']) . " terlihat dari " . strtolower($kokurikuler['deskripsi']) . ". ";
+                }
+
+                if (!$has_data) {
+                    echo "-";
+                }
+                ?>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="page-break-inside: avoid;">
         <!-- ekstra terisi dan kosong-->
         <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
             <tr>
@@ -373,7 +411,44 @@ h3 {
         </table>
     </div>
 
+    <div style="page-break-inside: avoid;">
+        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+            <tr>
+            <td style="width: 100%; text-align: left;"><b>Organisasi</b></td>
+            </tr>
+        </table>
+        <!-- data Organisasi yang digeluti -->
 
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;" border="1">
+            <tr>
+            <td style="width: 5%; text-align: center; vertical-align: middle; height: 20px;">No</td>
+            <td style="width: 95%; text-align: center; vertical-align: middle; height: 20px;">Organisasi</td>
+            </tr>
+            <?php  
+            $nomor = 1;
+            $organisasi = mysqli_query($mysqli,"SELECT * FROM siswa_organisasi WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_siswa='$siswa[id_siswa]' ORDER BY id_organisasi ASC");
+            $jumlah_organisasi = mysqli_num_rows($organisasi); // menghitung jumlah data yang diambil
+
+            if ($jumlah_organisasi > 0) {
+                while ($resorganisasi = mysqli_fetch_array($organisasi)) {
+                    $dataorganisasi = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM organisasi WHERE id_organisasi='$resorganisasi[id_organisasi]'"));
+        ?>
+            <tr>
+            <td style="width: 5%; text-align: center;"><?php echo $nomor++ ?></td>
+            <td style="width: 95%; text-align: left; padding: 3px;"><?php echo $dataorganisasi['nama_organisasi'] ?></td>
+            </tr>
+            <?php 
+                }
+            } else {
+                // Jika tidak ada data organisasi, tampilkan baris kosong
+        ?>
+            <tr>
+            <td style='width: 5%; text-align: center;'>-</td>
+            <td style='width: 95%; text-align: center; padding: 3px;'>-</td>
+            </tr>
+            <?php } ?>
+        </table>
+    </div>
 
     <div style="page-break-inside: avoid;">
         <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
@@ -438,8 +513,8 @@ h3 {
         </table>
     </div>
     
-<div style="page-break-inside: avoid;">
     <?php if($sekolah['semester']==2){ ?>
+    <div style="page-break-inside: avoid;">
     <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
         <tr>
             <td style="width: 100%; text-align: left;"><b>KETERANGAN KENAIKAN KELAS</b></td>

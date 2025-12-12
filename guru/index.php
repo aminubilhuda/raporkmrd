@@ -20,8 +20,9 @@ if($jumlahwali > 0){
 
 $jumlahpembina = mysqli_num_rows(mysqli_query($mysqli,"SELECT * FROM pembina_eskul WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_user='$_SESSION[id_user]' "));
 $jumlahpembinaprakerin = mysqli_num_rows(mysqli_query($mysqli,"SELECT * FROM prakerin WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_user='$_SESSION[id_user]' "));
+$jumlahpembinaorganisasi = mysqli_num_rows(mysqli_query($mysqli,"SELECT * FROM pembina_organisasi WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_user='$_SESSION[id_user]' "));
 
-$pembinap5bk = mysqli_num_rows(mysqli_query($mysqli,"SELECT * FROM proyek_kelas WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_user='$_SESSION[id_user]' "));
+$pembinap5bk = mysqli_num_rows(mysqli_query($mysqli,"SELECT * FROM proyek_kelas WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_user='$_SESSION[id_user]' AND id_tema > '0' "));
 
 $hari = date('l');
 if($hari == "Monday"){ $id_harian=1;}elseif($hari=="Tuesday"){ $id_harian=2;}elseif($hari=="Wednesday"){ $id_harian=3;}elseif($hari=="Thursday"){ $id_harian=4;}elseif($hari=="Friday"){ $id_harian=5;}elseif($hari=="Saturday"){ $id_harian=6;}

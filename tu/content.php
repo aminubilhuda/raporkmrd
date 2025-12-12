@@ -50,7 +50,8 @@
           'kokurikuler' => 'kokurikuler.php',
           'detail-kokurikuler'=> 'detail-kokurikuler.php',
           'penilaian-kokurikuler' => 'penilaian-kokurikuler.php',
-          'naik-kelas' => 'naik-kelas.php'
+          'naik-kelas' => 'naik-kelas.php',
+          'organisasi' => 'organisasi.php'
       ];
 
       // Jika pages kosong atau tidak ada dalam valid_pages, tampilkan dashboard

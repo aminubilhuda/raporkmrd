@@ -54,6 +54,7 @@
             <li><a href="?pages=kesiswaan">Data Siswa</a></li>
             <li><a href="?pages=mapel">Mata Pelajaran</a></li>
             <li><a href="?pages=ekstra">EkstraKurikuler</a></li>
+            <li><a href="?pages=organisasi">Organisasi</a></li>
             <li><a href="?pages=kompetensi">Kompetensi Keahlian</a></li>
             <li><a href="?pages=prakerin">Prakerin</a></li>
             <li><a href="?pages=deskripsi-rapor">Deskripsi Rapor</a></li>

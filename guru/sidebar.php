@@ -79,6 +79,28 @@
         </li>
         <?php } ?>
 
+        <!-- Menu Organisasi -->
+        <?php if($jumlahpembinaorganisasi > 0){ ?>
+
+        <li class="has_sub">
+          <a href="javascript:void(0);" class="waves-effect"><i class="fas fa-users"></i> <span>
+              Organisasi
+            </span> <span class="float-right"><i class="mdi mdi-chevron-right"></i></span></a>
+          <ul class="list-unstyled">
+            <?php
+                            $organisasi = mysqli_query($mysqli,"SELECT * FROM pembina_organisasi 
+                            JOIN organisasi ON pembina_organisasi.id_organisasi = organisasi.id_organisasi
+                            WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_user='$_SESSION[id_user]' ");
+                            while($rorganisasi = mysqli_fetch_array($organisasi)){
+                        ?>
+            <li><a
+                href="?pages=organisasi&orderID=<?php echo $rorganisasi['id_organisasi']?>"><?php echo $rorganisasi['nama_organisasi']; ?></a>
+            </li>
+            <?php } ?>
+          </ul>
+        </li>
+        <?php } ?>
+
         <!-- BK -->
         <?php if ($user['id_user'] == $_SESSION['id_user'] && $user['moto'] == 1) { ?>
         <li>
@@ -97,7 +119,7 @@
         <?php } ?>
 
         <?php
-        $jumlahproyek = mysqli_num_rows(mysqli_query($mysqli, "SELECT * FROM proyek_kelas WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_user='$_SESSION[id_user]'"));
+        $jumlahproyek = mysqli_num_rows(mysqli_query($mysqli, "SELECT * FROM proyek_kelas WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_user='$_SESSION[id_user]' AND id_tema = '0'"));
         if ($jumlahproyek > 0) { ?>
         <li>
           <a href="?pages=kokurikuler" class="waves-effect"><i class="fas fa-project-diagram"></i><span>

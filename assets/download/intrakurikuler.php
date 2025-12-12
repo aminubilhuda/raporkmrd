@@ -396,51 +396,43 @@ h3 {
     </table>
   </div>
 
-    <div style="page-break-inside: avoid;">
-    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-      <tr>
-        <td style="width: 100%; text-align: left;"><b>Organisasi</b></td>
-      </tr>
-    </table>
-    <!-- data Organisasi yang digeluti -->
+  <div style="page-break-inside: avoid;">
+      <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+        <tr>
+          <td style="width: 100%; text-align: left;"><b>Organisasi</b></td>
+        </tr>
+      </table>
+      <!-- data Organisasi yang digeluti -->
 
-    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;" border="1">
-      <tr>
-        <td style="width: 5%; text-align: center; vertical-align: middle; height: 20px;">No</td>
-        <td style="width: 95%; text-align: center; vertical-align: middle; height: 20px;">Organisasi</td>
-        <!-- <td style="width: 15%; text-align: center; vertical-align: middle; height: 20px;">Predikat</td>
-        <td style="width: 50%; text-align: center; vertical-align: middle; height: 20px;">Keterangan</td> -->
-      </tr>
-      <?php  
-        $nomor = 1;
-        $organisasi = mysqli_query($mysqli,"SELECT * FROM siswa_organisasi WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_siswa='$_GET[orderID]' ORDER BY id_organisasi ASC");
-        $jumlah_organisasi = mysqli_num_rows($organisasi); // menghitung jumlah data yang diambil
+      <table style="width: 100%; border-collapse: collapse; margin-top: 10px;" border="1">
+        <tr>
+          <td style="width: 5%; text-align: center; vertical-align: middle; height: 20px;">No</td>
+          <td style="width: 95%; text-align: center; vertical-align: middle; height: 20px;">Organisasi</td>
+        </tr>
+        <?php  
+          $nomor = 1;
+          $organisasi = mysqli_query($mysqli,"SELECT * FROM siswa_organisasi WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_siswa='$_GET[orderID]' ORDER BY id_organisasi ASC");
+          $jumlah_organisasi = mysqli_num_rows($organisasi); // menghitung jumlah data yang diambil
 
-        if ($jumlah_organisasi > 0) {
-            while ($resorganisasi = mysqli_fetch_array($organisasi)) {
-                $dataorganisasi = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM organisasi WHERE id_organisasi='$resorganisasi[id_organisasi]'"));
-    ?>
-      <tr>
-        <td style="width: 5%; text-align: center;"><?php echo $nomor++ ?></td>
-        <td style="width: 30%; text-align: left; padding: 3px;"><?php echo $dataeskul['nama_eskul'] ?></td>
-        <!-- <td style="width: 15%; text-align: center; vertical-align: middle; padding: 3px;">
-          <?php echo $reskul['predikat'] ?></td>
-        <td style="width: 50%; text-align: left; padding: 3px; vertical-align: middle;">
-          <?php echo $reskul['keterangan'] ?></td> -->
-      </tr>
-      <?php 
-            }
-        } else {
-            // Jika tidak ada data ekstrakurikuler, tampilkan baris kosong
-    ?>
-      <tr>
-        <td style='width: 5%; text-align: center;'>-</td>
-        <td style='width: 95%; text-align: center; padding: 3px;'>-</td>
-        <!-- <td style='width: 15%; text-align: center; vertical-align: middle; padding: 3px;'>-</td>
-        <td style='width: 50%; text-align: center; padding: 3px; vertical-align: middle;'>-</td> -->
-      </tr>
-      <?php } ?>
-    </table>
+          if ($jumlah_organisasi > 0) {
+              while ($resorganisasi = mysqli_fetch_array($organisasi)) {
+                  $dataorganisasi = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM organisasi WHERE id_organisasi='$resorganisasi[id_organisasi]'"));
+      ?>
+        <tr>
+          <td style="width: 5%; text-align: center;"><?php echo $nomor++ ?></td>
+          <td style="width: 30%; text-align: left; padding: 3px;"><?php echo $dataorganisasi['nama_organisasi'] ?></td>
+        </tr>
+        <?php 
+              }
+          } else {
+              // Jika tidak ada data organisasi, tampilkan baris kosong
+      ?>
+        <tr>
+          <td style='width: 5%; text-align: center;'>-</td>
+          <td style='width: 95%; text-align: center; padding: 3px;'>-</td>
+        </tr>
+        <?php } ?>
+      </table>
   </div>
 
 

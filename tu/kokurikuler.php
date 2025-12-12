@@ -1,7 +1,7 @@
 <?php
 // Create table if not exists
 mysqli_query($mysqli, "CREATE TABLE IF NOT EXISTS `deskripsi_kokurikuler` (
-  `id_deskripsi` int(11) NOT NULL PRIMARY KEY,
+  `id_deskripsi` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `kriteria` varchar(255) NOT NULL,
   `keterangan` varchar(255) NOT NULL,
   `contoh` varchar(255) NOT NULL,
@@ -21,7 +21,7 @@ if (mysqli_num_rows($cek_data) == 0) {
 
 // Create table if not exists
 mysqli_query($mysqli, "CREATE TABLE IF NOT EXISTS `dimensi_kokurikuler` (
-  `id_dimensi` int(11) NOT NULL PRIMARY KEY,
+  `id_dimensi` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `dimensi` varchar(255) NOT NULL
 )");
 

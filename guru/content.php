@@ -26,7 +26,8 @@ $valid_pages = [
     'rapor-pkl'                 => 'rapor-pkl.php',
     'p5bk'                      => 'p5bk.php',
     'kokurikuler'               => 'kokurikuler.php',
-    'penilaian-kokurikuler'     => 'penilaian-kokurikuler.php'
+    'penilaian-kokurikuler'     => 'penilaian-kokurikuler.php',
+    'organisasi'                => 'organisasi.php'
 ];
 
 // Jika pages kosong atau tidak ada dalam valid_pages, tampilkan dashboard
