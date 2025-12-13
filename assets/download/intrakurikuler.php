@@ -513,6 +513,23 @@ h3 {
     </table>
   </div>
 
+    <div style="page-break-inside: avoid;">
+        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+            <tr>
+                <td style="width: 100%; text-align: center;"><b>Tanggapan Orang Tua/Wali Murid</b></td>
+            </tr>
+        </table>
+ 
+
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;" border="1">
+            <tr>
+                <td style="width: 100%; text-align: left; height: 35px; padding: 5px;">
+                
+                </td>
+            </tr>
+        </table>
+    </div>
+
   <?php if($sekolah['semester']==2){ ?>
   <div style="page-break-inside: avoid;">
     <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">

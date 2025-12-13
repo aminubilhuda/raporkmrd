@@ -97,8 +97,8 @@
 
     <a href="?pages=<?php echo $_GET['pages']?>&orderID=<?php echo $_GET['orderID']?>" class="btn btn-primary">Lager
         Nilai Intra</a>
-    <a href="?pages=<?php echo $_GET['pages']?>&orderID=<?php echo $_GET['orderID']?>&filter=<?php echo 'laporan-p5'?>"
-        class="btn btn-success">Lager Nilai Proyek</a>
+    <!-- <a href="?pages=<?php echo $_GET['pages']?>&orderID=<?php echo $_GET['orderID']?>&filter=<?php echo 'laporan-p5'?>"
+        class="btn btn-success">Lager Nilai Proyek</a> -->
     <a href="?pages=<?php echo $_GET['pages']?>&orderID=<?php echo $_GET['orderID']?>&filter=<?php echo 'laporan-middle'?>"
         class="btn btn-danger">Lager Nilai Middle</a>
 </section>
@@ -171,7 +171,7 @@
                                 $nomorrank=1;
                                 $siswakelas = mysqli_query($mysqli,"SELECT * FROM nilai_kelas 
                                 JOIN siswa ON nilai_kelas.id_siswa = siswa.id_siswa
-                                WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_kelas='$_GET[orderID]' ORDER BY nilai DESC");
+                                WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_kelas='$_GET[orderID]' ORDER BY nama_siswa ASC");
                                 while($rsiswakelas = mysqli_fetch_array($siswakelas)){
                             ?>
                             <tr>
@@ -346,8 +346,8 @@
 
     <a href="?pages=<?php echo $_GET['pages']?>&orderID=<?php echo $_GET['orderID']?>" class="btn btn-primary">Lager
         Nilai Intra</a>
-    <a href="?pages=<?php echo $_GET['pages']?>&orderID=<?php echo $_GET['orderID']?>&filter=<?php echo 'laporan-p5'?>"
-        class="btn btn-success">Lager Nilai Proyek</a>
+    <!-- <a href="?pages=<?php echo $_GET['pages']?>&orderID=<?php echo $_GET['orderID']?>&filter=<?php echo 'laporan-p5'?>"
+        class="btn btn-success">Lager Nilai Proyek</a> -->
     <a href="?pages=<?php echo $_GET['pages']?>&orderID=<?php echo $_GET['orderID']?>&filter=<?php echo 'laporan-middle'?>"
         class="btn btn-danger">Lager Nilai Middle</a>
 </section>
@@ -469,7 +469,8 @@
             </div>
         </div><!-- /.row -->
 
-</section><!-- /.content -->
+</section>
+<!-- /.content -->
 
 
 
@@ -534,8 +535,8 @@
 
     <a href="?pages=<?php echo $_GET['pages']?>&orderID=<?php echo $_GET['orderID']?>" class="btn btn-primary">Lager
         Nilai Intra</a>
-    <a href="?pages=<?php echo $_GET['pages']?>&orderID=<?php echo $_GET['orderID']?>&filter=<?php echo 'laporan-p5'?>"
-        class="btn btn-success">Lager Nilai Proyek</a>
+    <!-- <a href="?pages=<?php echo $_GET['pages']?>&orderID=<?php echo $_GET['orderID']?>&filter=<?php echo 'laporan-p5'?>"
+        class="btn btn-success">Lager Nilai Proyek</a> -->
     <a href="?pages=<?php echo $_GET['pages']?>&orderID=<?php echo $_GET['orderID']?>&filter=<?php echo 'laporan-middle'?>"
         class="btn btn-danger">Lager Nilai Middle</a>
 </section>
