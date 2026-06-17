@@ -255,53 +255,38 @@ while($siswa = mysqli_fetch_array($all_siswa)) {
       </tr>
     </table>
 
-    <!-- data absensi yang digeluti -->
+    <!-- data absensi prakerin -->
 
     <table style="width: 50%; border-collapse: collapse; margin-top: 10px;" border="1">
       <?php  
-            // Ambil semua data dari tabel absen di mana id_absen > 1
-            $absen = mysqli_query($mysqli,"SELECT * FROM absen WHERE id_absen > 1 ORDER BY id_absen ASC");
-            
-            // Iterasi setiap data absen
-            while ($rabsen = mysqli_fetch_array($absen)) {
-                
-                // Query untuk mengecek presensi berdasarkan tahun, semester, id_absen dan id_siswa
-                $presensi_result = mysqli_query($mysqli,"SELECT * FROM presensi 
+            // Ambil data presensi prakerin untuk siswa ini
+            $presensi_pkl = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM presensi_prakerin 
                 WHERE tahun='$sekolah[tahun]' 
                 AND semester='$sekolah[semester]' 
-                AND id_absen='$rabsen[id_absen]' 
-                AND id_siswa='$siswa[id_siswa]'");
-
-                // Hitung jumlah data presensi yang ditemukan
-                $presensi_count = mysqli_num_rows($presensi_result);
-
-                // Ambil data presensi jika ada
-                $presensi_data = mysqli_fetch_array($presensi_result);
-            ?>
+                AND id_siswa='$siswa[id_siswa]'"));
+            
+            $sakit = isset($presensi_pkl['sakit']) ? $presensi_pkl['sakit'] : 0;
+            $izin = isset($presensi_pkl['izin']) ? $presensi_pkl['izin'] : 0;
+            $alpha = isset($presensi_pkl['alpha']) ? $presensi_pkl['alpha'] : 0;
+      ?>
       <tr>
-        <td style="width: 35%; text-align: left; padding: 3px;">
-          <?php echo $rabsen['absen'] ?>
-        </td>
+        <td style="width: 35%; text-align: left; padding: 3px;">Sakit</td>
         <td style="width: 65%; text-align: left; padding: 3px;">
-          <?php 
-                // Jika tidak ada presensi, tampilkan "-"
-                if ($presensi_count == 0) {
-                    echo "-";
-                } else {
-                    // Cek apakah kolom 'jumlah' memiliki nilai dan tidak kosong
-                    if (isset($presensi_data['jumlah']) && $presensi_data['jumlah'] != "") {
-                       
-                        echo $presensi_data['jumlah'];
-                       
-                    } else {
-                        // Jika 'jumlah' tidak ada, langsung tampilkan presensi_count
-                        echo $presensi_count;
-                    }
-                }
-                ?> Hari
+          <?php echo ($sakit > 0) ? $sakit : '-'; ?> Hari
         </td>
       </tr>
-      <?php } ?>
+      <tr>
+        <td style="width: 35%; text-align: left; padding: 3px;">Izin</td>
+        <td style="width: 65%; text-align: left; padding: 3px;">
+          <?php echo ($izin > 0) ? $izin : '-'; ?> Hari
+        </td>
+      </tr>
+      <tr>
+        <td style="width: 35%; text-align: left; padding: 3px;">Tanpa Keterangan</td>
+        <td style="width: 65%; text-align: left; padding: 3px;">
+          <?php echo ($alpha > 0) ? $alpha : '-'; ?> Hari
+        </td>
+      </tr>
     </table>
   </div>
 

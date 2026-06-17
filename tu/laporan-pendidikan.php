@@ -101,6 +101,8 @@
         class="btn btn-success">Lager Nilai Proyek</a> -->
     <a href="?pages=<?php echo $_GET['pages']?>&orderID=<?php echo $_GET['orderID']?>&filter=<?php echo 'laporan-middle'?>"
         class="btn btn-danger">Lager Nilai Middle</a>
+    <a href="?pages=<?php echo $_GET['pages']?>&orderID=<?php echo $_GET['orderID']?>&filter=<?php echo 'laporan-pkl'?>"
+        class="btn btn-success">Lager Nilai PKL</a>
 </section>
 
 
@@ -350,6 +352,8 @@
         class="btn btn-success">Lager Nilai Proyek</a> -->
     <a href="?pages=<?php echo $_GET['pages']?>&orderID=<?php echo $_GET['orderID']?>&filter=<?php echo 'laporan-middle'?>"
         class="btn btn-danger">Lager Nilai Middle</a>
+    <a href="?pages=<?php echo $_GET['pages']?>&orderID=<?php echo $_GET['orderID']?>&filter=<?php echo 'laporan-pkl'?>"
+        class="btn btn-success">Lager Nilai PKL</a>
 </section>
 
 <section class="content">
@@ -539,6 +543,8 @@
         class="btn btn-success">Lager Nilai Proyek</a> -->
     <a href="?pages=<?php echo $_GET['pages']?>&orderID=<?php echo $_GET['orderID']?>&filter=<?php echo 'laporan-middle'?>"
         class="btn btn-danger">Lager Nilai Middle</a>
+    <a href="?pages=<?php echo $_GET['pages']?>&orderID=<?php echo $_GET['orderID']?>&filter=<?php echo 'laporan-pkl'?>"
+        class="btn btn-success">Lager Nilai PKL</a>
 </section>
 
 <section class="content">
@@ -728,6 +734,111 @@
                                 </td>
                             </tr>
 
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div><!-- /.row -->
+
+</section><!-- /.content -->
+
+
+<?php }elseif(!empty($_GET['orderID']) and $_GET['filter']=='laporan-pkl'){ 
+
+    $kelas = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM kelas WHERE id_kelas='$_GET[orderID]'"));
+
+?>
+
+<section class="content-header">
+
+    <a href="?pages=<?php echo $_GET['pages']?>&orderID=<?php echo $_GET['orderID']?>" class="btn btn-primary">Lager
+        Nilai Intra</a>
+    <!-- <a href="?pages=<?php echo $_GET['pages']?>&orderID=<?php echo $_GET['orderID']?>&filter=<?php echo 'laporan-p5'?>"
+        class="btn btn-success">Lager Nilai Proyek</a> -->
+    <a href="?pages=<?php echo $_GET['pages']?>&orderID=<?php echo $_GET['orderID']?>&filter=<?php echo 'laporan-middle'?>"
+        class="btn btn-danger">Lager Nilai Middle</a>
+    <a href="?pages=<?php echo $_GET['pages']?>&orderID=<?php echo $_GET['orderID']?>&filter=<?php echo 'laporan-pkl'?>"
+        class="btn btn-success">Lager Nilai PKL</a>
+</section>
+
+<section class="content">
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Rekap Nilai PKL - Kelas <?php echo $kelas['nama_kelas']?></h3>
+                    <div class="card-tools float-right">
+                        <a href="../assets/download/rapor-pkl-all.php?dataID=<?php echo $user['id_user']?>&kelasID=<?php echo $_GET['orderID']?>"
+                            target="_blank" class="btn btn-danger btn-sm"><i class="fa fa-print"></i> Cetak Semua</a>
+                    </div>
+                </div><!-- /.card-header -->
+                <div class="card-body table-responsive">
+                    <table class="table table-striped table-bordered" style="font-size:12px;">
+                        <thead>
+                            <tr style="background-color:#86efac;">
+                                <th style="text-align:center; vertical-align:middle; width:5%;">No</th>
+                                <th style="text-align:center; vertical-align:middle; width:5%;">Cetak</th>
+                                <th style="text-align:center; vertical-align:middle; width:10%;">NISN</th>
+                                <th style="text-align:center; vertical-align:middle;">Nama Peserta Didik</th>
+                                <th style="text-align:center; vertical-align:middle;">Mitra DU/DI</th>
+                                <th style="text-align:center; vertical-align:middle; width:10%;">Jumlah Mapel</th>
+                                <th style="text-align:center; vertical-align:middle; width:7%;">S</th>
+                                <th style="text-align:center; vertical-align:middle; width:7%;">I</th>
+                                <th style="text-align:center; vertical-align:middle; width:7%;">A</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php  
+                            $nomor = 1;
+                            $siswakelas = mysqli_query($mysqli, "SELECT DISTINCT s.* 
+                                FROM siswa s
+                                JOIN siswa_kelas sk ON s.id_siswa = sk.id_siswa
+                                JOIN siswa_prakerin sp ON s.id_siswa = sp.id_siswa
+                                WHERE sk.tahun='$sekolah[tahun]' 
+                                AND sk.semester='$sekolah[semester]'
+                                AND sk.id_kelas='$_GET[orderID]'
+                                ORDER BY s.nama_siswa ASC");
+                            
+                            while($rsiswakelas = mysqli_fetch_array($siswakelas)) {
+                                // Ambil data prakerin siswa
+                                $sprakerin = mysqli_fetch_array(mysqli_query($mysqli, "SELECT sp.*, p.mitra 
+                                    FROM siswa_prakerin sp
+                                    JOIN prakerin p ON sp.id_prakerin = p.id_prakerin
+                                    WHERE sp.tahun='$sekolah[tahun]' 
+                                    AND sp.semester='$sekolah[semester]'
+                                    AND sp.id_siswa='$rsiswakelas[id_siswa]'"));
+                                
+                                // Hitung jumlah nilai PKL
+                                $jml_nilai = mysqli_num_rows(mysqli_query($mysqli, "SELECT * FROM nilai_prakerin 
+                                    WHERE tahun='$sekolah[tahun]' 
+                                    AND semester='$sekolah[semester]' 
+                                    AND id_siswa='$rsiswakelas[id_siswa]'"));
+                                
+                                // Ambil absensi PKL
+                                $presensi_pkl = mysqli_fetch_array(mysqli_query($mysqli, "SELECT * FROM presensi_prakerin 
+                                    WHERE tahun='$sekolah[tahun]' 
+                                    AND semester='$sekolah[semester]' 
+                                    AND id_siswa='$rsiswakelas[id_siswa]'"));
+                                $sakit = isset($presensi_pkl['sakit']) ? $presensi_pkl['sakit'] : 0;
+                                $izin = isset($presensi_pkl['izin']) ? $presensi_pkl['izin'] : 0;
+                                $alpha = isset($presensi_pkl['alpha']) ? $presensi_pkl['alpha'] : 0;
+                            ?>
+                            <tr>
+                                <td style="text-align:center;"><?php echo $nomor++ ?></td>
+                                <td style="text-align:center;"><a
+                                        href="../assets/download/rapor-pkl.php?dataID=<?php echo $user['id_user']?>&orderID=<?php echo $rsiswakelas['id_siswa']?>"
+                                        target="_blank" class="btn btn-danger btn-sm"><i class="fa fa-print"></i></a>
+                                </td>
+                                <td style="text-align:center;"><?php echo $rsiswakelas['nisn'] ?></td>
+                                <td><?php echo $rsiswakelas['nama_siswa'] ?></td>
+                                <td><?php echo isset($sprakerin['mitra']) ? $sprakerin['mitra'] : '-' ?></td>
+                                <td style="text-align:center;"><?php echo $jml_nilai ?></td>
+                                <td style="text-align:center; background-color:#fbecb9;"><?php echo $sakit ?></td>
+                                <td style="text-align:center; background-color:#fbecb9;"><?php echo $izin ?></td>
+                                <td style="text-align:center; background-color:#fbecb9;"><?php echo $alpha ?></td>
+                            </tr>
+                            <?php } ?>
                         </tbody>
                     </table>
                 </div>

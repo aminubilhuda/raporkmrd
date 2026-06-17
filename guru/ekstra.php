@@ -25,6 +25,11 @@ $dataeskul = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM eskul WHERE 
                         <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#modalTambahAnggota">
                             <i class="fas fa-plus"></i> Tambah Anggota
                         </button>
+                        <?php if($sekolah['semester'] == 2){ ?>
+                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modalSalinAnggota">
+                            <i class="fas fa-copy"></i> Salin Anggota
+                        </button>
+                        <?php } ?>
                     </div>
                 </div><!-- /.card-header -->
                 <form method="POST">
@@ -152,6 +157,31 @@ $dataeskul = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM eskul WHERE 
         </div>
     </div>
 </div>
+<?php if($sekolah['semester'] == 2){ ?>
+<!-- Modal Salin Anggota -->
+<div class="modal fade" id="modalSalinAnggota" tabindex="-1" role="dialog" aria-labelledby="modalSalinAnggotaLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="modalSalinAnggotaLabel">Konfirmasi Salin Anggota</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST">
+                    <p>Yakin ingin menyalin anggota dari Semester 1 ke Semester 2 (Genap)?</p>
+                    <p class="text-muted"><small>Siswa yang sudah terdaftar atau sudah tidak aktif akan dilewati.</small></p>
+                    <div class="modal-footer">
+                        <button type="submit" name="salin_anggota" class="btn btn-info">Ya, Salin Anggota</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<?php } ?>
 <script>
     $(document).ready(function() {
         $('#datatable2').DataTable();
@@ -208,6 +238,50 @@ window.location.href = "?pages=<?php echo $_GET['pages']?>&orderID=<?php echo $_
             } else {
                 echo "<script>alert('Gagal menghapus anggota');</script>";
             }
+        }
+
+        // Process Copy Members from Semester 1
+        if(isset($_POST['salin_anggota'])){
+            $sumber_tahun = $sekolah['tahun'];
+            $sumber_semester = 1;
+
+            $ambildata = mysqli_query($mysqli, "SELECT * FROM siswa_eskul
+                WHERE tahun='$sumber_tahun' AND semester='$sumber_semester' AND id_eskul='$_GET[orderID]'");
+
+            $jumlah_sukses = 0;
+            $jumlah_skip_exist = 0;
+            $jumlah_skip_nonaktif = 0;
+
+            while($row = mysqli_fetch_array($ambildata)){
+                $id_siswa = $row['id_siswa'];
+
+                // Check if student is still active in current semester
+                $cek_aktif = mysqli_num_rows(mysqli_query($mysqli, "SELECT * FROM siswa_kelas
+                    WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_siswa='$id_siswa' AND status='1'"));
+
+                if($cek_aktif == 0){
+                    $jumlah_skip_nonaktif++;
+                    continue;
+                }
+
+                // Check if already a member in current semester
+                $cek_member = mysqli_num_rows(mysqli_query($mysqli, "SELECT * FROM siswa_eskul
+                    WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_eskul='$_GET[orderID]' AND id_siswa='$id_siswa'"));
+
+                if($cek_member > 0){
+                    $jumlah_skip_exist++;
+                    continue;
+                }
+
+                // Insert new member
+                $simpan = mysqli_query($mysqli, "INSERT INTO siswa_eskul SET
+                    tahun='$sekolah[tahun]', semester='$sekolah[semester]',
+                    id_eskul='$_GET[orderID]', id_siswa='$id_siswa', predikat='', keterangan=''");
+
+                if($simpan) $jumlah_sukses++;
+            }
+
+            echo "<script>alert('Berhasil menyalin $jumlah_sukses anggota.\\nSudah terdaftar: $jumlah_skip_exist.\\nTidak aktif: $jumlah_skip_nonaktif'); window.location.href='?pages=$_GET[pages]&orderID=$_GET[orderID]';</script>";
         }
         ?>
 

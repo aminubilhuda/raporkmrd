@@ -6,8 +6,34 @@ include "../config/kode.php";
 include "../config/function_date.php";
 // error_reporting(0);
 
+// Handle filter POST
+if (isset($_POST['set_view_filter'])) {
+    if (!empty($_POST['view_tahun']) && !empty($_POST['view_semester'])) {
+        $_SESSION['view_tahun'] = $_POST['view_tahun'];
+        $_SESSION['view_semester'] = $_POST['view_semester'];
+    }
+    header("Location: index.php" . (isset($_GET['pages']) ? "?pages=" . $_GET['pages'] : ""));
+    exit;
+}
+if (isset($_POST['reset_view_filter'])) {
+    unset($_SESSION['view_tahun']);
+    unset($_SESSION['view_semester']);
+    header("Location: index.php" . (isset($_GET['pages']) ? "?pages=" . $_GET['pages'] : ""));
+    exit;
+}
+
 $user = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM users WHERE id_user='$_SESSION[id_user]'"));
 $sekolah = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM sekolah WHERE id_sekolah='1'"));
+
+// Override sekolah settings if session filter is active
+if (isset($_SESSION['view_tahun']) && isset($_SESSION['view_semester'])) {
+    $sekolah['tahun'] = $_SESSION['view_tahun'];
+    $sekolah['semester'] = $_SESSION['view_semester'];
+    $sekolah['is_historical_view'] = true;
+} else {
+    $sekolah['is_historical_view'] = false;
+}
+
 $kepala = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM kepala_sekolah WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' "));
 $semester = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM semester WHERE id_semester='$sekolah[semester]' "));
 $tahun = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM tahun_pelajaran WHERE id_tahun_pelajaran='$sekolah[tahun]' "));

@@ -374,8 +374,8 @@ h3 {
                 $dataeskul = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM eskul WHERE id_eskul='$reskul[id_eskul]'"));
     ?>
       <tr>
-        <td style="width: 5%; text-align: center;"><?php echo $nomor++ ?></td>
-        <td style="width: 30%; text-align: left; padding: 3px;"><?php echo $dataeskul['nama_eskul'] ?></td>
+        <td style="width: 5%; text-align: center; vertical-align: middle; padding: 3px;"><?php echo $nomor++ ?></td>
+        <td style="width: 30%; text-align: center; vertical-align: middle; padding: 3px;"><?php echo $dataeskul['nama_eskul'] ?></td>
         <td style="width: 15%; text-align: center; vertical-align: middle; padding: 3px;">
           <?php echo $reskul['predikat'] ?></td>
         <td style="width: 50%; text-align: left; padding: 3px; vertical-align: middle;">

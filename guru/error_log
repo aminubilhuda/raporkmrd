@@ -1,0 +1,1 @@
+[04-May-2026 01:59:44 UTC] PHP Warning:  mysqli::__construct(): (08004/1040): Too many connections in /home3/abdinega/km.abdinegara.com/config/koneksi.php on line 38

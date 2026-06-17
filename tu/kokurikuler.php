@@ -39,6 +39,36 @@ if (mysqli_num_rows($cek_data) == 0) {
 (7, 'Kesehatan'),
 (8, 'Komunikasi');");
 }
+
+// Salin kegiatan kokurikuler
+if (isset($_POST['salin_kegiatan'])) {
+    $id_proyek_asli = $_POST['id_proyek_kelas_salin'];
+    $id_kelas_baru = $_POST['id_kelas_salin'];
+    $id_user_baru = $_POST['id_user_salin'];
+
+    $proyek_asli = mysqli_fetch_array(mysqli_query($mysqli, "SELECT * FROM proyek_kelas WHERE id_proyek_kelas='$id_proyek_asli'"));
+    $kode_baru = randomString(6);
+
+    $insert = mysqli_query($mysqli, "INSERT INTO proyek_kelas (kode, tahun, semester, id_kelas, id_tema, id_user, judul_proyek, deskripsi_singkat)
+        VALUES ('$kode_baru', '$sekolah[tahun]', '$sekolah[semester]', '$id_kelas_baru', '$proyek_asli[id_tema]', '$id_user_baru', '$proyek_asli[judul_proyek]', '$proyek_asli[deskripsi_singkat]')");
+
+    if ($insert) {
+        $id_proyek_baru = mysqli_insert_id($mysqli);
+
+        // Copy proyek_tujuan
+        $tujuan = mysqli_query($mysqli, "SELECT * FROM proyek_tujuan WHERE id_proyek_kelas='$id_proyek_asli'");
+        while ($rtujuan = mysqli_fetch_array($tujuan)) {
+            mysqli_query($mysqli, "INSERT INTO proyek_tujuan (id_proyek_kelas, id_dimensi, deskripsi)
+                VALUES ('$id_proyek_baru', '$rtujuan[id_dimensi]', '$rtujuan[deskripsi]')");
+        }
+
+        echo "<script>alert('Berhasil menyalin kegiatan'); window.location.href='?pages=kokurikuler';</script>";
+        exit;
+    } else {
+        echo "<script>alert('Gagal menyalin kegiatan: " . mysqli_real_escape_string($mysqli, mysqli_error($mysqli)) . "');</script>";
+        exit;
+    }
+}
 ?>
 
 <div class="container-fluid mt-4 bg-white p-4 shadow-sm">
@@ -55,7 +85,7 @@ if (mysqli_num_rows($cek_data) == 0) {
           <th>Judul Kegiatan</th>
           <th>Pembina</th>
           <th>Siswa</th>
-          <th>Edit / Nilai / Hapus</th>
+          <th>Edit / Nilai / Salin / Hapus</th>
         </tr>
       </thead>
       <tbody>
@@ -84,6 +114,8 @@ if (mysqli_num_rows($cek_data) == 0) {
               class="btn btn-warning btn-sm">Edit</a>
             <a href="?pages=penilaian-kokurikuler&orderID=<?php echo $r['id_proyek_kelas'] ?>&dataID=<?php echo $r['id_kelas'] ?>"
               class="btn btn-success btn-sm">Nilai</a>
+            <a href="#" class="btn btn-info btn-sm" data-toggle="modal" data-target="#salinModal"
+              data-id="<?php echo $r['id_proyek_kelas'] ?>">Salin</a>
             <a href="?pages=kokurikuler&filter=hapus&orderID=<?php echo $r['id_proyek_kelas'] ?>"
               class="btn btn-danger btn-sm" onclick="return confirm('Apakah anda yakin ingin menghapus data ini?')">Hapus</a>
           </td>
@@ -154,11 +186,107 @@ if (mysqli_num_rows($cek_data) == 0) {
   </div>
 </div>
 <script>
-$(document).ready(function() {
-  $('#tambahKokurikulerModal').on('shown.bs.modal', function() {
-    $('#kelas').trigger('focus')
-  })
-});
+(function() {
+  function initTambah() {
+    if (typeof $ === 'undefined') { setTimeout(initTambah, 50); return; }
+    $(document).ready(function() {
+      $('#tambahKokurikulerModal').on('shown.bs.modal', function() {
+        $('#kelas').trigger('focus')
+      });
+    });
+  }
+  initTambah();
+})();
+</script>
+
+<!-- Modal Salin -->
+<div class="modal fade" id="salinModal" tabindex="-1" role="dialog" aria-labelledby="salinModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="salinModalLabel">Salin Kegiatan</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="POST">
+        <div class="modal-body">
+          <input type="hidden" name="id_proyek_kelas_salin" id="idProyekSalin">
+          <div class="form-group">
+            <label>Kelas</label>
+            <select name="id_kelas_salin" id="kelasSalin" class="form-control" required>
+              <option value="">Pilih Kelas</option>
+              <?php
+              $kelas_salin = mysqli_query($mysqli, "SELECT * FROM kelas ORDER BY id_tingkat, id_kelas ASC");
+              while($rkelas_salin = mysqli_fetch_array($kelas_salin)) {
+              ?>
+              <option value="<?php echo $rkelas_salin['id_kelas'] ?>"><?php echo $rkelas_salin['nama_kelas'] ?></option>
+              <?php } ?>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Pembina Kegiatan</label>
+            <select name="id_user_salin" id="guruSalin" class="form-control" required>
+              <option value="">Pilih Pembina</option>
+              <?php
+              $guru_salin = mysqli_query($mysqli, "SELECT * FROM users WHERE jabatan='3' ORDER BY id_user ASC");
+              while ($rguru_salin = mysqli_fetch_array($guru_salin)) {
+              ?>
+              <option value="<?php echo $rguru_salin['id_user'] ?>"><?php echo $rguru_salin['nama'] ?></option>
+              <?php } ?>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+          <button type="submit" name="salin_kegiatan" class="btn btn-primary">Salin</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  function initSalin() {
+    if (typeof $ === 'undefined') { setTimeout(initSalin, 50); return; }
+    $(document).ready(function() {
+      var dataWaliKelas = {
+        <?php
+        $q_wali = mysqli_query($mysqli, "SELECT kelas_wali.id_kelas, users.id_user
+                                          FROM kelas_wali
+                                          JOIN users ON kelas_wali.id_user = users.id_user
+                                          WHERE kelas_wali.tahun='$sekolah[tahun]'
+                                          AND kelas_wali.semester='$sekolah[semester]'");
+        $first = true;
+        while ($rw = mysqli_fetch_array($q_wali)) {
+            if (!$first) echo ",\n";
+            echo $rw['id_kelas'] . ": " . $rw['id_user'];
+            $first = false;
+        }
+        ?>
+      };
+
+      $('#salinModal').on('show.bs.modal', function(event) {
+        var button = $(event.relatedTarget);
+        var idProyek = button.data('id');
+        $('#idProyekSalin').val(idProyek);
+        $('#kelasSalin').val('');
+        $('#guruSalin').val('');
+      });
+
+      $('#kelasSalin').on('change', function() {
+        var idKelas = parseInt($(this).val());
+        if (idKelas && dataWaliKelas[idKelas]) {
+          $('#guruSalin').val(dataWaliKelas[idKelas]);
+        } else {
+          $('#guruSalin').val('');
+        }
+      });
+    });
+  }
+  initSalin();
+})();
 </script>
 
 <?php

@@ -1,0 +1,1 @@
+[30-Apr-2026 06:40:18 UTC] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user 'root'@'localhost' (using password: NO) in /home3/abdinega/km.abdinegara.com/config/koneksi.php on line 38

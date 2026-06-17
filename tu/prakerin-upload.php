@@ -70,8 +70,8 @@ if (isset($_POST['import'])) {
                     throw new Exception("Data tidak lengkap");
                 }
 
-                if (empty($row[0]) || empty($row[1]) || empty($row[2]) || empty($row[3]) || empty($row[4])) {
-                    throw new Exception("Ada data yang kosong");
+                if (empty($row[0]) || empty($row[1]) || empty($row[2]) || empty($row[3])) {
+                    throw new Exception("Ada data wajib (Mitra, Lokasi, Tanggal Mulai/Akhir) yang kosong");
                 }
 
                 $mitra = mysqli_real_escape_string($mysqli, $row[0]);
@@ -84,20 +84,23 @@ if (isset($_POST['import'])) {
                     throw new Exception($e->getMessage());
                 }
 
-                $nama_guru = mysqli_real_escape_string($mysqli, $row[4]);
+                $nama_guru = isset($row[4]) ? mysqli_real_escape_string($mysqli, $row[4]) : '';
+                $id_user = 0; // Default jika kosong
 
-                // Cari ID guru dari nama
-                $guru_query = mysqli_query($mysqli, "SELECT id_user FROM users WHERE nama='$nama_guru' AND jabatan='3' LIMIT 1");
-                if (!$guru_query) {
-                    throw new Exception("Error database: " . mysqli_error($mysqli));
+                if (!empty($nama_guru)) {
+                    // Cari ID guru dari nama
+                    $guru_query = mysqli_query($mysqli, "SELECT id_user FROM users WHERE nama='$nama_guru' AND jabatan='3' LIMIT 1");
+                    if (!$guru_query) {
+                        throw new Exception("Error database: " . mysqli_error($mysqli));
+                    }
+
+                    $guru_data = mysqli_fetch_array($guru_query);
+                    if (!$guru_data) {
+                        throw new Exception("Guru dengan nama '$nama_guru' tidak ditemukan");
+                    }
+
+                    $id_user = $guru_data['id_user'];
                 }
-
-                $guru_data = mysqli_fetch_array($guru_query);
-                if (!$guru_data) {
-                    throw new Exception("Guru dengan nama '$nama_guru' tidak ditemukan");
-                }
-
-                $id_user = $guru_data['id_user'];
                 $sekolah = mysqli_fetch_array(mysqli_query($mysqli, "SELECT * FROM sekolah WHERE id_sekolah='1'"));
 
                 $simpan = mysqli_query($mysqli, "INSERT INTO prakerin (tahun, semester, mitra, lokasi, tanggal_mulai, tanggal_akhir, id_user) 
