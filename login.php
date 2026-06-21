@@ -1,11 +1,10 @@
-<?php  
+<?php
 session_set_cookie_params([
-    'lifetime' => 7200, // 2 hour
+    'lifetime' => 7200,
     'path' => '/',
-    'domain' => 'km.abdinegara.com', // Set the correct domain
-    'secure' => true, // If using HTTPS
+    'secure' => false,
     'httponly' => true,
-    'samesite' => 'Strict'
+    'samesite' => 'Lax'
 ]);
 session_start();
 error_reporting(0);

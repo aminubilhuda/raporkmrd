@@ -91,7 +91,8 @@
                         <table class="table table-striped table-bordered table-sm" style="font-size:12px;">
                             <thead>
                                 <tr class="bg-info">
-                                    <th rowspan="2" class="text-center align-middle" style="width:5%;">No</th>
+                                    <th rowspan="2" class="text-center align-middle" style="width:3%;">No</th>
+                                    <th rowspan="2" class="text-center align-middle" style="width:5%;">Aksi</th>
                                     <th rowspan="2" class="text-center align-middle">Nama Peserta Didik</th>
                                     <th colspan="<?php echo $jumlahmapelkelas?>" class="text-center align-middle">Mata
                                         Pelajaran</th>
@@ -106,7 +107,7 @@
                                 </tr>
                                 <tr class="bg-info">
                                     <?php
-                                    $mapelkelas = mysqli_query($mysqli,"SELECT * FROM mapel_kelas 
+                                    $mapelkelas = mysqli_query($mysqli,"SELECT * FROM mapel_kelas
                                     JOIN mapel ON mapel_kelas.id_mapel = mapel.id_mapel
                                     WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_kelas='$datakelas[id_kelas]' ORDER BY urut ASC");
                                     while($rmapelkelas = mysqli_fetch_array($mapelkelas)){
@@ -125,18 +126,23 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php  
-                                $nomor=1;
-                                $siswakelas = mysqli_query($mysqli,"SELECT * FROM nilai_kelas 
+                                <?php
+                                $no=1;
+                                $rank=1;
+                                $siswakelas = mysqli_query($mysqli,"SELECT * FROM nilai_kelas
                                 JOIN siswa ON nilai_kelas.id_siswa = siswa.id_siswa
-                                WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_kelas='$datakelas[id_kelas]' ORDER BY nama_siswa ASC");
+                                WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_kelas='$datakelas[id_kelas]' ORDER BY nilai DESC, nama_siswa ASC");
                                 while($rsiswakelas = mysqli_fetch_array($siswakelas)){
                                 ?>
                                 <tr>
-                                    <td class="text-center align-middle"><?php echo $nomor++ ?></td>
+                                    <td class="text-center align-middle"><?php echo $no++ ?></td>
+                                    <td class="text-center align-middle">
+                                        <a href="../assets/download/intrakurikuler.php?orderID=<?php echo $rsiswakelas['id_siswa']?>&dataID=<?php echo $_SESSION['id_user']?>"
+                                           target="_blank" class="btn btn-danger btn-sm" title="Cetak Leger"><i class="fa fa-print"></i></a>
+                                    </td>
                                     <td><?php echo $rsiswakelas['nama_siswa'] ?></td>
                                     <?php
-                                    $mapelkelas = mysqli_query($mysqli,"SELECT * FROM mapel_kelas 
+                                    $mapelkelas = mysqli_query($mysqli,"SELECT * FROM mapel_kelas
                                     JOIN mapel ON mapel_kelas.id_mapel = mapel.id_mapel
                                     WHERE tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_kelas='$datakelas[id_kelas]' ORDER BY urut ASC");
                                     while($rmapelkelas = mysqli_fetch_array($mapelkelas)){
@@ -148,13 +154,7 @@
                                     <?php } ?>
                                     <td class="text-center align-middle"><?php echo $rsiswakelas['jumlah']?></td>
                                     <td class="text-center align-middle"><?php echo $rsiswakelas['nilai']?></td>
-                                    <td class="text-center align-middle">
-                                        <?php
-                                            $rank = mysqli_query($mysqli, "SELECT COUNT(*) + 1 AS rank FROM nilai_kelas WHERE nilai > '$rsiswakelas[nilai]' AND tahun='$sekolah[tahun]' AND semester='$sekolah[semester]' AND id_kelas='$datakelas[id_kelas]'");
-                                            $rankData = mysqli_fetch_array($rank);
-                                            echo $rankData['rank'];
-                                        ?>
-                                    </td>
+                                    <td class="text-center align-middle"><?php echo $rank++?></td>
 
                                     <!-- Data absensi siswa -->
                                     <!-- HARUS DI PERBAIKI -->

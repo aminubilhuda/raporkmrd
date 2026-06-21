@@ -225,6 +225,12 @@ $tahun = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM tahun_pelajaran 
   <script src="../assets/pages/form-editor.js"></script>
 
   <script>
+  // Chart data from dashboard
+  var chartKelas = <?php echo isset($chart_kelas) ? json_encode($chart_kelas) : '[]'; ?>;
+  var chartRata = <?php echo isset($chart_rata) ? json_encode($chart_rata) : '[]'; ?>;
+  var chartRataMid = <?php echo isset($chart_mid) ? json_encode($chart_mid) : '[]'; ?>;
+  var chartJmlSiswa = <?php echo isset($chart_siswa) ? json_encode($chart_siswa) : '[]'; ?>;
+
   $(document).ready(function() {
     // Initialize DataTable
     var table = $('#datatable').DataTable();
@@ -280,6 +286,59 @@ $tahun = mysqli_fetch_array(mysqli_query($mysqli,"SELECT * FROM tahun_pelajaran 
         }
       });
     });
+
+    // Chart Statistik Rapor
+    if (chartKelas.length > 0) {
+        new Chart(document.getElementById('chartNilai'), {
+            type: 'bar',
+            data: {
+                labels: chartKelas,
+                datasets: [{
+                    label: 'Rata-rata Nilai',
+                    data: chartRata,
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                },{
+                    label: 'Rata-rata Tengah Semester',
+                    data: chartRataMid,
+                    backgroundColor: 'rgba(255, 159, 64, 0.6)',
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                title: { display: true, text: 'Rata-rata Nilai per Kelas' },
+                scales: { yAxes: [{ ticks: { min: 0, max: 100 } }] }
+            }
+        });
+
+        new Chart(document.getElementById('chartSiswa'), {
+            type: 'doughnut',
+            data: {
+                labels: chartKelas,
+                datasets: [{
+                    data: chartJmlSiswa,
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.7)','rgba(255, 99, 132, 0.7)','rgba(255, 206, 86, 0.7)',
+                        'rgba(75, 192, 192, 0.7)','rgba(153, 102, 255, 0.7)','rgba(255, 159, 64, 0.7)',
+                        'rgba(201, 203, 207, 0.7)','rgba(34, 193, 195, 0.7)','rgba(253, 187, 45, 0.7)',
+                        'rgba(238, 130, 238, 0.7)','rgba(60, 179, 113, 0.7)','rgba(106, 90, 205, 0.7)',
+                        'rgba(255, 140, 0, 0.7)','rgba(0, 206, 209, 0.7)','rgba(220, 20, 60, 0.7)'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                title: { display: true, text: 'Jumlah Siswa per Kelas', fontSize: 11 },
+                legend: { position: 'bottom', labels: { boxWidth: 8, fontSize: 8, padding: 5 } }
+            }
+        });
+    }
   });
   </script>
 </body>

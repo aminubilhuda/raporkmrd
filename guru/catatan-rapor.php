@@ -108,7 +108,7 @@
                                     <th class="text-center align-middle" style="width:10%; height: 40px;">Rapor Tengah
                                         Semester</th>
                                     <th class="text-center align-middle" style="width:10%;">Rapor Semester</th>
-                                    <th class="text-center align-middle" style="width:10%;">Rapor Pelajar Pancasila</th>
+                                    <!-- <th class="text-center align-middle" style="width:10%;">Rapor Pelajar Pancasila</th> -->
                                 </tr>
                                 <tr class="bg-danger text-white">
                                     <th class="text-center">
@@ -123,12 +123,12 @@
                                             <i class="fa fa-print"></i> Cetak Serentak
                                         </a>
                                     </th>
-                                    <th class="text-center">
+                                    <!-- <th class="text-center">
                                         <a href="../assets/download/profil-pancasila-all.php?kelas=<?php echo $datakelas['id_kelas']; ?>"
                                             target="_blank" class="btn btn-info">
                                             <i class="fa fa-print"></i> Cetak Serentak
                                         </a>
-                                    </th>
+                                    </th> -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -166,12 +166,6 @@
                                         <a href="../assets/download/intrakurikuler.php?orderID=<?php echo $rsiswakelas['id_siswa'] ?>"
                                             target="_blank" class="btn btn-success btn-sm">
                                             <i class="fa fa-print"></i> Semester
-                                        </a>
-                                    </td>
-                                    <td class="text-center align-middle">
-                                        <a href="../assets/download/profil-pancasila.php?orderID=<?php echo $rsiswakelas['id_siswa'] ?>"
-                                            target="_blank" class="btn btn-info btn-sm">
-                                            <i class="fa fa-print"></i> P5BK
                                         </a>
                                     </td>
                                 </tr>

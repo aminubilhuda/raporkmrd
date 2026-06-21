@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "rapor.php (Apache)",
+      "runtimeExecutable": "/opt/homebrew/opt/httpd/bin/httpd",
+      "runtimeArgs": ["-f", "/Users/godboy/Library/FlyEnv/server/apache/common/conf/17d34597e8044ca772150e8cc8a81cb5.conf", "-k", "start"],
+      "port": 80
+    }
+  ]
+}

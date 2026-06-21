@@ -27,7 +27,7 @@ require_once('fungsi_validasi.php');
 
 $host = "localhost";
 $user = "root";
-$pass = "";
+$pass = "root";
 $db = "abdinega_db_raporkm";
 // $host = "localhost";
 // $user = "abdinega_abdira";
